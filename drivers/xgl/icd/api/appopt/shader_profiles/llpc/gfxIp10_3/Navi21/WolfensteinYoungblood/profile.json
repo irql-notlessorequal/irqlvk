@@ -1,0 +1,127 @@
+{
+  "entries": [
+    {
+      "pattern": {
+        "always": true
+      },
+      "action": {
+        "binningOverride": 1
+      }
+    },
+    {
+      "pattern": {
+        "cs": {
+          "codeHash": "0x15ed07fc5a652d5b fb9aadd786b3883a"
+        }
+      },
+      "action": {
+        "cs": {
+          "useSiScheduler": true,
+          "disableCodeSinking": true
+        }
+      }
+    },
+    {
+      "pattern": {
+        "cs": {
+          "codeHash": "0xa0fb7ebc03b45207 afab1a2efcf63ae2"
+        }
+      },
+      "action": {
+        "cs": {
+          "useSiScheduler": true
+        }
+      }
+    },
+    {
+      "pattern": {
+        "ps": {
+          "codeHash": "0x421cc6f5ec031ec1 2f36edc1c043adf9"
+        }
+      },
+      "action": {
+        "ps": {
+          "waveSize": 32
+        }
+      }
+    },
+    {
+      "pattern": {
+        "ps": {
+          "codeHash": "0x45b1fd4fe26b69c3 4a8d94913ed81bb"
+        }
+      },
+      "action": {
+        "ps": {
+          "waveSize": 32,
+          "useSiScheduler": true
+        }
+      }
+    },
+    {
+      "pattern": {
+        "ps": {
+          "codeHash": "0x182812e30a77e9bc 26f3dad1df817a8a"
+        }
+      },
+      "action": {
+        "ps": {
+          "waveSize": 32
+        }
+      }
+    },
+    {
+      "pattern": {
+        "ps": {
+          "codeHash": "0xa5e97aa30fc20bee cd825e729a4b3230"
+        }
+      },
+      "action": {
+        "ps": {
+          "waveSize": 32
+        }
+      }
+    },
+    {
+      "pattern": {
+        "shaderOnly": true,
+        "cs": {
+          "codeHash": "0x623c2a0008628e23 c0e71a4aa2eb148"
+        }
+      },
+      "action": {
+        "cs": {
+          "maxWavesPerCu": 14,
+          "useSiScheduler": true,
+          "unrollThreshold": 1600
+        }
+      }
+    },
+    {
+      "pattern": {
+        "ps": {
+          "codeHash": "0x6b7a33f6880d2379 1647af746badb1e4"
+        }
+      },
+      "action": {
+        "ps": {
+          "useSiScheduler": true,
+          "vgprLimit": 72,
+          "ldsSpillLimitDwords": 4096
+        }
+      }
+    },
+    {
+      "pattern": {
+        "cs": {
+          "codeHash": "0xda18b129e7454401 da893d5d28f70704"
+        }
+      },
+      "action": {
+        "cs": {
+          "maxWavesPerCu": 8
+        }
+      }
+    }
+  ]
+}

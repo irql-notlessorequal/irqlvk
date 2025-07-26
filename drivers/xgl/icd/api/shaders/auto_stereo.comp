@@ -1,0 +1,66 @@
+/*
+ ***********************************************************************************************************************
+ *
+ *  Copyright (c) 2023 Advanced Micro Devices, Inc. All Rights Reserved.
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ *
+ **********************************************************************************************************************/
+
+#version 460
+layout(local_size_x = 8, local_size_y = 8) in;
+layout(binding = 0, rgba8) uniform image2D leftImage;
+layout(binding = 1, rgba8) uniform image2D rightImage;
+
+layout (push_constant) uniform  AutoStereoPushConstants
+{
+    uvec2 dimension;
+    uint  horizontalInterleave;
+};
+
+void main()
+{
+    if (gl_GlobalInvocationID.x >= dimension.x ||
+        gl_GlobalInvocationID.y >= dimension.y)
+    {
+        return;
+    }
+
+    uvec2 fragCoord = gl_GlobalInvocationID.xy;
+    vec4 leftPixel  = imageLoad(leftImage, ivec2(fragCoord));
+    vec4 rightPixel = imageLoad(rightImage, ivec2(fragCoord));
+
+    vec4 presentPixel;
+
+	// Probably a little confusing but if you think about it, if you want a vertical interleave
+	// i.e. Every alternate vertical line of pixels are from the right image. You want to use the x
+	// dimension to determine that.
+    uint coord = (horizontalInterleave == 1) ? gl_GlobalInvocationID.y : gl_GlobalInvocationID.x;
+
+    if (coord % 2 == 0)
+    {
+        presentPixel = leftPixel;
+    }
+    else
+    {
+        presentPixel = rightPixel;
+    }
+
+    imageStore(leftImage, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y), presentPixel);
+}

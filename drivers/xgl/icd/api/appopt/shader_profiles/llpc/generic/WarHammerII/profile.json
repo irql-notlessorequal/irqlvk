@@ -1,0 +1,38 @@
+{
+  "entries": [
+    {
+      "pattern": {
+        "always": true
+      },
+      "action": {
+        "ps": {
+          "unrollThreshold": 2150
+        }
+      }
+    },
+    {
+      "pattern": {
+        "vs": {
+          "codeHash": "0xcde8cb95ff89cd64 b2e6f758475f2c36"
+        }
+      },
+      "action": {
+        "vs": {
+          "aggressiveInvariantLoads": "DisableOptimization"
+        }
+      }
+    },
+    {
+      "pattern": {
+        "vs": {
+          "codeHash": "0x4b070f72d05e4f5c 12017c5c15abf55d"
+        }
+      },
+      "action": {
+        "vs": {
+          "aggressiveInvariantLoads": "DisableOptimization"
+        }
+      }
+    }
+  ]
+}
