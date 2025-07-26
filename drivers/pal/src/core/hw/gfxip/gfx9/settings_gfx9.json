@@ -1,0 +1,3832 @@
+{
+  "ComponentName": "Gfx9_Pal",
+  "DriverState": [
+    "HaltedOnDeviceInit"
+  ],
+  "Hwl": "Gfx9",
+  "Tags": [
+    "General",
+    "Cache flush",
+    "Color Targets",
+    "Compute Pipelines",
+    "Depth/Stencil",
+    "Graphics Pipelines",
+    "Shader Options",
+    "NGG Controls",
+    "PBB and DFSM",
+    "Prefetching (L2 Cache Warming)",
+    "Texture Filtering",
+    "Hardware Workarounds",
+    "RPM",
+    "Gfx9",
+    {
+      "Name": "Vrs"
+    },
+    "Gfx10",
+    {
+      "Name": "Gfx11",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11",
+        "PAL_BUILD_NAVI3X",
+        "PAL_BUILD_PHOENIX"
+      ]
+    }
+  ],
+  "Settings": [
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx10LdsPsGroupSizeNone",
+            "Value": 0,
+            "Description": "Don't share PS attributes across waves."
+          },
+          {
+            "Name": "Gfx10LdsPsGroupSizeDouble",
+            "Value": 1,
+            "Description": "Share PS attributes across two waves."
+          }
+        ],
+        "Name": "Gfx10LdsPsGroupSize"
+      },
+      "Description": "Specifies how many PS waves should share the same LDS allocation.  Not supported on all platforms",
+      "Tags": [
+        "Shader Options",
+        "Gfx9"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": "Gfx10LdsPsGroupSizeNone"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "VariableName": "ldsPsGroupSize",
+      "Name": "LdsPsGroupSize"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx10AllowBigPageRenderTarget",
+            "Value": 1,
+            "Description": "Color render targets"
+          },
+          {
+            "Name": "Gfx10AllowBigPageDepthStencil",
+            "Value": 2,
+            "Description": "Depth stencil images"
+          },
+          {
+            "Name": "Gfx10AllowBigPageShaderWrite",
+            "Value": 4,
+            "Description": "Shader writeable images"
+          },
+          {
+            "Name": "Gfx10AllowBigPageShaderRead",
+            "Value": 8,
+            "Description": "Shader readable images"
+          },
+          {
+            "Name": "Gfx10AllowBigPageBuffers",
+            "Value": 16,
+            "Description": "Renderable buffers"
+          }
+        ],
+        "Name": "Gfx10AllowBigPage"
+      },
+      "Description": "Bitmask of cases where big-page will potentially be enabled",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 63
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "allowBigPage",
+      "Name": "AllowBigPage"
+    },
+    {
+      "Description": "Disables binding of border color palettes, and forces any samplers created to use a transparent black color. ",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "disableBorderColorPaletteBinds",
+      "Name": "DisableBorderColorPaletteBinds"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx9PrintMetaEquationInfoEquations",
+            "Value": 1,
+            "Description": "Prints meta equations themselves."
+          },
+          {
+            "Name": "Gfx9PrintMetaEquationInfoProcessing",
+            "Value": 2,
+            "Description": "Prints equation coordinates as they're processed."
+          }
+        ],
+        "Name": "Gfx9PrintMetaEquationInfo"
+      },
+      "Description": "Controls printing of meta-equation data.  Debug builds only.",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "printMetaEquationInfo",
+      "Name": "PrintMetaEquationInfo"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx9OptimizedFastClearDisabled",
+            "Value": 0,
+            "Description": "Disable the Optimized Fast Clear Path."
+          },
+          {
+            "Name": "Gfx9OptimizedFastClearColorCmask",
+            "Value": 1,
+            "Description": "Enable Optimized Fast Clear Path for color surfaces cmask metadata fastclear(msaa only)."
+          },
+          {
+            "Name": "Gfx9OptimizedFastClearColorDcc",
+            "Value": 2,
+            "Description": "Enable Optimized Fast Clear Path for color surfaces dcc metadata fastclear."
+          },
+          {
+            "Name": "Gfx9OptimizedFastClearDepth",
+            "Value": 4,
+            "Description": "Enable Optimized Fast Clear Path for depth surfaces htile metadata fastclear."
+          }
+        ],
+        "Name": "Gfx9OptimizedFastClear"
+      },
+      "Description": "If enabled, the meta-equations will be processed by an optimized compute shader and algorithm.",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 7
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "optimizedFastClear",
+      "Name": "OptimizedFastClear"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "Name": "DecompressDcc",
+            "Value": 1,
+            "Description": "DCC decompress."
+          },
+          {
+            "Name": "DecompressHtile",
+            "Value": 2,
+            "Description": "Depth expand."
+          },
+          {
+            "Name": "DecompressFmask",
+            "Value": 4,
+            "Description": "FMask decompress."
+          },
+          {
+            "Name": "DecompressFastClear",
+            "Value": 8,
+            "Description": "Fast clear eliminate."
+          }
+        ],
+        "Name": "DecompressMask"
+      },
+      "Description": "Controls whether the specified decompress / expand / eliminate operations will always occur when requested.",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "alwaysDecompress",
+      "Name": "AlwaysDecompress"
+    },
+    {
+      "Description": "True to override 1D images to be 2D instead.",
+      "Tags": [
+        "General"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "treat1dAs2d",
+      "Name": "Treat1dAs2d"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "Gfx10ForceWaveBreakSizeNone",
+            "Value": 0,
+            "Description": "No wave breaks by region."
+          },
+          {
+            "Name": "Gfx10ForceWaveBreakSize8x8",
+            "Value": 1,
+            "Description": "8x8 region size."
+          },
+          {
+            "Name": "Gfx10ForceWaveBreakSize16x16",
+            "Value": 2,
+            "Description": "16x16 region size."
+          },
+          {
+            "Name": "Gfx10ForceWaveBreakSize32x32",
+            "Value": 3,
+            "Description": "32x32 region size."
+          },
+          {
+            "Name": "Gfx10ForceWaveBreakSizeClient",
+            "Value": 4,
+            "Description": "Use client specified value."
+          }
+        ],
+        "Name": "Gfx10ForceWaveBreakSize"
+      },
+      "Description": "Forces the size of a wave break; over-rides client-specified value.",
+      "Tags": [
+        "General",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": "Gfx10ForceWaveBreakSizeClient"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "forceWaveBreakSize",
+      "Name": "ForceWaveBreakSize"
+    },
+    {
+      "Description": "Affects tiled-to-tiled image copies on the GFX10 SDMA engine where both images are compressed Set to true to leave the source image in a compressed state, set to false to leave the dest image in a compressed state.",
+      "Tags": [
+        "General",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "sdmaPreferCompressedSource",
+      "Name": "SdmaPreferCompressedSource"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx10UseCompToSingleNone",
+            "Value": 0,
+            "Description": "Use comp-to-reg all image type."
+          },
+          {
+            "Name": "Gfx10UseCompToSingle2d",
+            "Value": 1,
+            "Description": "Use comp-to-single for 2d image."
+          },
+          {
+            "Name": "Gfx10UseCompToSingle2dArray",
+            "Value": 2,
+            "Description": "Use comp-to-single for 2d array image."
+          },
+          {
+            "Name": "Gfx10UseCompToSingleMsaa",
+            "Value": 4,
+            "Description": "Use comp-to-single for MSAA image."
+          },
+          {
+            "Name": "Gfx10UseCompToSingle3D",
+            "Value": 8,
+            "Description": "Use comp-to-single for 3d image."
+          },
+          {
+            "Name": "Gfx10DisableCompToReg",
+            "Value": 16,
+            "Description": "If set, comp-to-reg rendering will be disabled for images that were cleared with comp-to-single."
+          },
+          {
+            "Name": "Gfx10UseCompToSingle8bpp",
+            "Value": 32,
+            "Description": "If set, use comp-to-single for 8bpp image."
+          },
+          {
+            "Name": "Gfx10UseCompToSingle16bpp",
+            "Value": 64,
+            "Description": "If set, use comp-to-single for 16bpp image."
+          }
+        ],
+        "Name": "Gfx10UseCompToSingle"
+      },
+      "Description": "Whether we need to set first pixel of each block that corresponds to 1 byte in DCC memory, and don't need to do a fast clear eliminate based on image type.",
+      "Tags": [
+        "General",
+        "Gfx10"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 31
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "useCompToSingle",
+      "Name": "UseCompToSingle"
+    },
+    {
+      "Description": "Forces a fast clear code to be the regular clear code and turns off AC01 compression which makes sure the four 'magic' compressed clear codes aren't used.",
+      "Tags": [
+        "Color Targets",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "forceRegularClearCode",
+      "Name": "ForceRegularClearCode"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "SlowClearUav",
+            "Value": 0,
+            "Description": "Use a compute pipeline and UAVs"
+          },
+          {
+            "Name": "SlowClearRt",
+            "Value": 1,
+            "Description": "Treat clear target as a render target"
+          }
+        ],
+        "Name": "SlowClearMethod",
+        "Description": "Method used for slow clears."
+      },
+      "Name": "Gfx11SlowClearMethod",
+      "Tags": [
+        "General",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": "SlowClearUav"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "gfx11SlowClearMethod",
+      "Description": "Determines whether slow clears should occur as UAVs or render targets.  GFX11 only",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "GFX11 adds support that allows DCC to always support format replacement",
+      "Tags": [
+        "Color Targets",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11AlwaysAllowDccFormatReplacement",
+      "Name": "Gfx11AlwaysAllowDccFormatReplacement",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "Controls the value of CB_FDCC_CONTROL.SAMPLE_MASK_TRACKER_WATERMARK.  Valid values are 0 and 3-15",
+      "Tags": [
+        "Color Targets",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx11SampleMaskTrackerWatermark",
+      "Name": "Gfx11SampleMaskTrackerWatermark",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "LogicOp": "GreaterThanOrEqual",
+            "Description": "You cannot get rid of the metadata by multiplying by 0. That would cause problems.",
+            "Value": 1
+          }
+        ]
+      },
+      "Description": "Multiplies the size of the metadata surface by this amount. Metadata surface size works in powers of 2. Non power of 2 multiples might work, but it won't be a value that is actaully returned by addrlib.",
+      "Tags": [
+        "General",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": 1
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx11MetadataSizeMultiplier",
+      "Name": "Gfx11MetadataSizeMultiplier",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "The final alignment of the metadata will be the result of Max(addrlib DCC alignment, gfx11OverrideMetadataAlignment).",
+      "Tags": [
+        "General",
+        "Gfx11"
+      ],
+      "Flags": {
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx11OverrideMetadataAlignment",
+      "Name": "Gfx11OverrideMetadataAlignment",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "Forces use of a graphics fill memory path on command buffers that supports graphics ops",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "forceGraphicsFillMemoryPath",
+      "Name": "ForceGraphicsFillMemoryPath"
+    },
+    {
+      "Description": "Controls whether to wait after F/I when changing targets within a Metadata mip tail region. This can resolve corruptions related to metadata cache conflicts.",
+      "Tags": [
+        "Cache flush",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waitOnMetadataMipTail",
+      "Name": "WaitOnMetadataMipTail"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "WaitAfterCbFlush",
+            "Value": 1,
+            "Description": "Wait after CB flush events."
+          },
+          {
+            "Name": "WaitBeforeBarrierEopWithCbFlush",
+            "Value": 2,
+            "Description": "Wait before barrier EOP which includes CB flush."
+          },
+          {
+            "Name": "WaitAfterDbFlush",
+            "Value": 4,
+            "Description": "Wait after DB flush events."
+          }
+        ],
+        "Name": "WaitOnFlush"
+      },
+      "Description": "Bitmask of cases to add waits around F/I events. These options can help to diagnose and potentially workaround some deadlock or corruption issues, although will likely have some performance impact.",
+      "Tags": [
+        "Cache flush",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true,
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "waitOnFlush",
+      "Name": "WaitOnFlush"
+    },
+    {
+      "Description": "If true, writes the COLOR_SRC_OPT and COLOR_DST_OPT bits of theSX_MRT#_BLEND_OPT for Blend States.",
+      "Tags": [
+        "Color Targets",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "blendOptimizationsEnable",
+      "Name": "BlendOptimizationEnable"
+    },
+    {
+      "Description": "If true, DCC will be used to support fast color clears on singlesampled Color Target Images.",
+      "Tags": [
+        "Color Targets",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "fastColorClearEnable",
+      "Name": "FastColorClearEnable"
+    },
+    {
+      "Description": "If true, DCC will be used to support fast color clears on singlesampled 3D Color Target Images.",
+      "Tags": [
+        "Color Targets",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "fastColorClearOn3dEnable",
+      "Name": "FastColorClearOn3DEnable"
+    },
+    {
+      "Description": "Controls the setting of the CB_COLOR_INFO.FMASK_COMPRESSION_DISABLE bit.",
+      "Tags": [
+        "Color Targets",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "fmaskCompressDisable",
+      "Name": "FmaskCompressDisable"
+    },
+    {
+      "Description": "If true, allows for non-zero fMask pipe-bank-xor.",
+      "Tags": [
+        "Color Targets",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "fmaskAllowPipeBankXor",
+      "Name": "FmaskAllowPipeBankXor"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx9DccOnComputeInit",
+            "Value": 1,
+            "Description": "One time init"
+          },
+          {
+            "Name": "Gfx9DccOnComputeFastClear",
+            "Value": 2,
+            "Description": "Fast color clear."
+          }
+        ],
+        "Name": "Gfx9DccOnCompute"
+      },
+      "Description": "Determines the situations on which a compute shader will be used for DCC access.",
+      "Tags": [
+        "Color Targets",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 3
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "dccOnComputeEnable",
+      "Name": "DccOnComputeEnable"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx10CbDbCachePolicyLruCmask",
+            "Value": 1,
+            "Description": "Use cache policy LRU for CMASK"
+          },
+          {
+            "Name": "Gfx10CbDbCachePolicyLruDcc",
+            "Value": 2,
+            "Description": "Use cache policy LRU for DCC"
+          },
+          {
+            "Name": "Gfx10CbDbCachePolicyLruFmask",
+            "Value": 4,
+            "Description": "Use cache policy LRU for FMASK"
+          },
+          {
+            "Name": "Gfx10CbDbCachePolicyLruHtile",
+            "Value": 8,
+            "Description": "Use cache policy LRU for HTILE"
+          },
+          {
+            "Name": "Gfx10CbDbCachePolicyLruOcclusion",
+            "Value": 16,
+            "Description": "Use cache policy LRU for Occlusion"
+          },
+          {
+            "Name": "Gfx10CbDbCachePolicyLruDepth",
+            "Value": 256,
+            "Description": "Use cache policy LRU for Depth. WARNING - Use with caution, can dominate L2."
+          },
+          {
+            "Name": "Gfx10CbDbCachePolicyLruStencil",
+            "Value": 512,
+            "Description": "Use cache policy LRU for Stencil. WARNING - Use with caution, can dominate L2."
+          },
+          {
+            "Name": "Gfx10CbDbCachePolicyLruColor",
+            "Value": 1024,
+            "Description": "Use cache policy LRU for Color. WARNING - NOT RECOMMENDED as it can dominate L2."
+          }
+        ],
+        "Name": "Gfx10CbDbCachePolicyLru"
+      },
+      "Description": "Bitmask of which CB/DB cache policies to follow.",
+      "Tags": [
+        "Color Targets",
+        "Gfx10"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true,
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "cbDbCachePolicy",
+      "Name": "CbDbCachePolicy"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "Description": "Do not limit number of waves in flight in each compute unit.",
+            "Value": 0
+          },
+          {
+            "LogicOp": "LessThanOrEqual",
+            "Description": "Limits the number of waves in flight in each compute unit.",
+            "Value": 40
+          }
+        ]
+      },
+      "Description": "Controls the WAVES_PER_SH field in the COMPUTE_RESOURCE_LIMITS register; note that it is specified per-CU rather than per-SH for convenience.",
+      "Tags": [
+        "Compute Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "csMaxWavesPerCu",
+      "Name": "CsMaxWavesPerCu"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "Description": "Disables locking.",
+            "Value": 0
+          },
+          {
+            "LogicOp": "MultipleOf",
+            "Description": "CS per-SH low threshold for locking.",
+            "Value": 4
+          }
+        ]
+      },
+      "Description": "Controls the LOCK_THRESHOLD field in the COMPUTE_RESOURCE_LIMITS register. CS per-SH low threshold for locking.",
+      "Tags": [
+        "Compute Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "csLockThreshold",
+      "Name": "CsLockThreshold"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "Name": "CsSimdDestCntlDefault",
+            "Value": 0,
+            "Description": "Keeps the default SIMD_DEST_CNTL behavior."
+          },
+          {
+            "Name": "CsSimdDestCntlForce1",
+            "Value": 1,
+            "Description": "Forces SIMD_DEST_CNTL to 1."
+          },
+          {
+            "Name": "CsSimdDestCntlForce0",
+            "Value": 2,
+            "Description": "Forces SIMD_DEST_CNTL to 0."
+          }
+        ],
+        "Name": "CsSimdDestCntlMode"
+      },
+      "Description": "Controls the SIMD_DEST_CNTL field of the COMPUTE_RESOURCE_LIMITS register. By default, this flag is calulated based on the number of waves in the dispatch. If the number of waves is a multiple of 4, this flag is set, otherwise it is cleared.",
+      "Tags": [
+        "Compute Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": "CsSimdDestCntlDefault"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "csSimdDestCntl",
+      "Name": "CsSimdDestCntl"
+    },
+    {
+      "Description": "Controls the value of the COMPUTE_DISPATCH_INTERLEAVE register. This register governs how many thread groups are sent to one SE before switching to the next one. This setting will override the clients behaviour.",
+      "Tags": [
+        "Compute Pipelines",
+        "Gfx11"
+      ],
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "CsDispatchInterleaveSizeHonorClient",
+            "Value": 0,
+            "Description": "Leave the interleave size determination to the client."
+          },
+          {
+            "Name": "OverrideCsDispatchInterleaveSizeDisabled",
+            "Value": 1,
+            "Description": "Disable interleaving (switch after each threadgroup)."
+          },
+          {
+            "Name": "OverrideCsDispatchInterleaveSize128",
+            "Value": 2,
+            "Description": "Switch at 128 threads."
+          },
+          {
+            "Name": "OverrideCsDispatchInterleaveSize256",
+            "Value": 3,
+            "Description": "Switch at 256 threads."
+          },
+          {
+            "Name": "OverrideCsDispatchInterleaveSize512",
+            "Value": 4,
+            "Description": "Switch at 512 threads."
+          },
+          {
+            "Name": "OverrideCsDispatchInterleaveSize64",
+            "Value": 5,
+            "Description": "Switch at 64 threads."
+          }
+        ],
+        "Name": "OverrideCsDispatchInterleaveSize"
+      },
+      "Defaults": {
+        "Default": "CsDispatchInterleaveSizeHonorClient"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "overrideCsDispatchInterleaveSize",
+      "Name": "OverrideCsDispatchInterleaveSize",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "If true, HTile will be enabled for depth/stencil images.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "htileEnable",
+      "Name": "HtileEnable"
+    },
+    {
+      "Description": "Toggle between DB_Z_INFO.NUM_SAMPLES = 3 (legacy) and DB_Z_INFO.NUM_SAMPLES = coverage_samples (from MSAA state object)",
+      "Tags": [
+        "Depth/Stencil"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "useLegacyDbZInfo",
+      "Name": "UseLegacyDbZInfo"
+    },
+    {
+      "Description": "If set then RB+ is disabled if any color target has blending enabled.  GFX11 specific",
+      "Tags": [
+        "General"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11DisableRbPlusWithBlending",
+      "Name": "Gfx11DisableRbPlusWithBlending"
+    },
+    {
+      "Description": "If set then implements this GFX11 workaround.  if(BLENDING && pipeline in 1xaa)  OVERRIDE_INTRINSIC_RATE_ENABLE = 1  OVERRIDE_INTRINSIC_RATE = 2 (4xaa) else  OVERRIDE_INTRINSIC_RATE_ENABLE = 0",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "Flags": {
+        "RereadSetting": true
+      },
+      "VariableName": "waEnableIntrinsicRateEnable",
+      "Name": "WaEnableIntrinsicRateEnable"
+    },
+    {
+      "Description": "If set then disables AC01 (special black and white clear codes)",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Ac01WaAllowAc01",
+            "Value": 0,
+            "Description": "The workaround is disabled, PAL uses its normal AC01 fast clear logic."
+          },
+          {
+            "Name": "Ac01WaForbidAc01",
+            "Value": 1,
+            "Description": "The workaround is enabled, AC01 fast clears are forbidden."
+          },
+          {
+            "Name": "Ac01WaPublicSetting",
+            "Value": 2,
+            "Description": "The ValidateSettings function replaces this with one of the first two enums based on the public setting."
+          }
+        ],
+        "Name": "Ac01WaState"
+      },
+      "Defaults": {
+        "Default": "Ac01WaAllowAc01"
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "Flags": {
+        "RereadSetting": true
+      },
+      "VariableName": "waDisableAc01",
+      "Name": "WaDisableAc01"
+    },
+    {
+      "Description": "If true, the ITERATE_256 bit will always be set and iterate256 optimization will be disabled. Pertains to GFX10 only",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "disableIterate256Opt",
+      "Name": "DisableIterate256Opt"
+    },
+    {
+      "Description": "If true, allow depth copy resolve.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "allowDepthCopyResolve",
+      "Name": "AllowDepthCopyResolve"
+    },
+    {
+      "Description": "If true, depth compression will be enabled.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "DependsOn": {
+        "Settings": [
+          {
+            "Values": [
+              true
+            ],
+            "Name": "Gfx9HtileEnable"
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "depthCompressEnable",
+      "Name": "DepthCompressEnable"
+    },
+    {
+      "Description": "If true, stencil compression will be enabled.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "DependsOn": {
+        "Settings": [
+          {
+            "Values": [
+              true
+            ],
+            "Name": "Gfx9HtileEnable"
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "stencilCompressEnable",
+      "Name": "StencilCompressEnable"
+    },
+    {
+      "Description": "If true, DB preloading will be enabled.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "DependsOn": {
+        "Settings": [
+          {
+            "Values": [
+              true
+            ],
+            "Name": "Gfx9HtileEnable"
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "dbPreloadEnable",
+      "Name": "DbPreloadEnable"
+    },
+    {
+      "Description": "If true, DB preload window dimensions will be used instead of the depth buffer's dimensions.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "DependsOn": {
+        "Settings": [
+          {
+            "Values": [
+              true
+            ],
+            "Name": "Gfx9HtileEnable"
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "dbPreloadWinEnable",
+      "Name": "DbPreloadWinEnable"
+    },
+    {
+      "Description": "If true, per-tile tracking of exp/clear will be enabled.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "DependsOn": {
+        "Settings": [
+          {
+            "Values": [
+              true
+            ],
+            "Name": "Gfx9HtileEnable"
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "dbPerTileExpClearEnable",
+      "Name": "DbPerTileExpClearEnable"
+    },
+    {
+      "Description": "If true, hierarchical depth testing will be enabled.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "DependsOn": {
+        "Settings": [
+          {
+            "Values": [
+              true
+            ],
+            "Name": "Gfx9HtileEnable"
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "hiDepthEnable",
+      "Name": "HiDepthEnable"
+    },
+    {
+      "Description": "If true, hierarchical stencil testing will be enabled.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "DependsOn": {
+        "Settings": [
+          {
+            "Values": [
+              true
+            ],
+            "Name": "Gfx9HtileEnable"
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "hiStencilEnable",
+      "Name": "HiStencilEnable"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "Description": "256-bit request size.",
+            "Value": 0
+          },
+          {
+            "Description": "512-bit request size.",
+            "Value": 1
+          }
+        ]
+      },
+      "Description": "Specifies the DB read request size.",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "dbRequestSize",
+      "Name": "DbRequestSize",
+      "Flags": {
+        "IsHex": true
+      }
+    },
+    {
+      "Description": "Controls the DB_RENDER_OVERRIDE2.DISABLE_COLOR_ON_VALIDATION register field",
+      "Tags": [
+        "Depth/Stencil",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "dbDisableColorOnValidation",
+      "Name": "DbDisableColorOnValidation"
+    },
+    {
+      "ValidValues": {
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "OutOfOrderPrimDisable",
+            "Value": 0,
+            "Description": "Always disable."
+          },
+          {
+            "Name": "OutOfOrderPrimSafe",
+            "Value": 1,
+            "Description": "Enable when known to not affect render output."
+          },
+          {
+            "Name": "OutOfOrderPrimAggressive",
+            "Value": 2,
+            "Description": "Enable when suspected to not affect render output."
+          },
+          {
+            "Name": "OutOfOrderPrimAlways",
+            "Value": 3,
+            "Description": "Always enable."
+          }
+        ],
+        "Name": "OutOfOrderPrimMode"
+      },
+      "Description": "Enable out-of-order primitive mode. Only available on parts that have more than one VGT.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": "OutOfOrderPrimSafe"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "enableOutOfOrderPrimitives",
+      "Name": "EnableOutOfOrderPrimitives"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "LogicOp": "LessThanOrEqual",
+            "Description": "Values are log(2) of the watermark.",
+            "Value": 7
+          }
+        ]
+      },
+      "Description": "The watermark value for out-of-order primitives.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 7
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "outOfOrderWatermark",
+      "Name": "OutOfOrderWatermark"
+    },
+    {
+      "Description": "If true, disables vertex grouping specified in GE_CNTL register for Gfx10+ ASICs by setting VERT_GRP_SIZE to 256.",
+      "Tags": [
+        "General",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "disableGeCntlVtxGrouping",
+      "Name": "DisableGeCntlVtxGrouping"
+    },
+    {
+      "Description": "If true, disables the PA broadcast of prims that touch adjacent screen tiles to help check PA output rate.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "disablePaBroadcast",
+      "Name": "DisablePaBroadcast"
+    },
+    {
+      "Description": "If true, the HW-GS stage will prefer to send a wave to each SIMD in a CU before moving to the next enabled CU. If false, HW-GS prefers to send only one wave to each CU before moving to the next enabled CU.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gsCuGroupEnabled",
+      "Name": "GsCuGroupEnabled"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "LogicOp": "MultipleOf",
+            "Description": "Must be 128 dword aligned.",
+            "Value": 128
+          }
+        ]
+      },
+      "Description": "Maximum amount of LDS space to alloc for each on-chip GS subgroup, in DWORDs.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 8192
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gsMaxLdsSize",
+      "Name": "GsMaxLdsSize"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "LogicOp": "LessThanOrEqual",
+            "Value": 127
+          }
+        ]
+      },
+      "Description": "Controls the value for late-alloc GS.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 16
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "lateAllocGs",
+      "Name": "LateAllocGs"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "LateAllocVsBehaviorLegacy",
+            "Value": 0,
+            "Description": "Enable late-alloc vs, but incorrectly masks off CUs in dynamic mode"
+          },
+          {
+            "Name": "LateAllocVsBehaviorDynamicEnableAllCus",
+            "Value": 1,
+            "Description": "Enable late-alloc vs, but don't mask off CUs"
+          },
+          {
+            "Name": "LateAllocVsBehaviorDisabled",
+            "Value": 2,
+            "Description": "Disable late-alloc vs entirely"
+          }
+        ],
+        "Name": "LateAllocVsBehavior"
+      },
+      "Description": "Controls the behavior for late-alloc VS.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": "LateAllocVsBehaviorLegacy"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "lateAllocVs",
+      "Name": "LateAllocVs"
+    },
+    {
+      "Description": "Clamps the maximum tessellation factor.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 64.0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "float",
+      "VariableName": "maxTessFactor",
+      "Name": "MaxTessFactor"
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "LogicOp": "LessThanOrEqual",
+            "Description": "Number of offchip tessellation buffers.",
+            "Value": 508
+          }
+        ]
+      },
+      "Description": "Controls the number of LDS buffers used for offchip tessellation: Gfx9: 1->508: Number of offchip tessellation buffers.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 508
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "numOffchipLdsBuffers",
+      "Name": "NumOffchipLdsBuffers"
+    },
+    {
+      "Description": "Controls the number of patches-per-thread-group to run when tessellationis enabled. This value is normally limited by hardware resources (LDS,TFBuffer, Threads). - Setting to 1 will always work, but is slowest. - Setting to 0 will allow the driver to choose the optimal value. - Any other value will be used (clamped based on HW resources). Offchip Tess rounds this to the nearest multiple of four.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "numTessPatchesPerTg",
+      "Name": "NumTessPatchesPerThreadGroup"
+    },
+    {
+      "ValidValues": {
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "OffchipLdsBufferSize8192",
+            "Value": 0,
+            "Description": "8k DWORDs."
+          },
+          {
+            "Name": "OffchipLdsBufferSize4096",
+            "Value": 1,
+            "Description": "4k DWORDs."
+          },
+          {
+            "Name": "OffchipLdsBufferSize2048",
+            "Value": 2,
+            "Description": "2k DWORDs."
+          },
+          {
+            "Name": "OffchipLdsBufferSize1024",
+            "Value": 3,
+            "Description": "1k DWORDs."
+          }
+        ],
+        "Name": "OffchipLdsBufferSize"
+      },
+      "Description": "Controls the size of each offchip LDS Buffer.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": "OffchipLdsBufferSize8192"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "offchipLdsBufferSize",
+      "Name": "OffchipLdsBufferSize"
+    },
+    {
+      "Description": "Number of primitives sent to one VGT before switching to the next. Valid range is 1-65536, values larger than 256 are expected to hurtperformance. This setting only affects non-tessellation and non-NGG pipelines.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 128
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "primGroupSize",
+      "Name": "PrimgroupSize"
+    },
+    {
+      "Description": "If true, RbPlus will be enabled for ASIC of RbPlus capability.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx9RbPlusEnable",
+      "Name": "RbPlusEnable"
+    },
+    {
+      "Description": "Value to program the number of cache lines for SPI_SHADER_LATE_ALLOC_VS to. The range is [0, 63]. The default value of 255 changes to (numCUs/SA - 1) * 4.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx10"
+      ],
+      "ValidValues": {
+        "Values": [
+          {
+            "LogicOp": "LessThanOrEqual",
+            "Description": "Number of cache lines to program SPI_SHADER_LATE_ALLOC_VS to.",
+            "Value": 63
+          }
+        ]
+      },
+      "Defaults": {
+        "Default": 255
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx10SpiShaderLateAllocVsNumLines",
+      "Name": "Gfx10SpiShaderLateAllocVsNumLines"
+    },
+    {
+      "Description": "Value to program GE_PC_ALLOC::NUM_PC_LINES to for legacy and NGG-passthru pipelines. The value in this setting is per shader-engine. The driver multiplies this value by the number of shader engines and then subtracts 1.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 128
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx10GePcAllocNumLinesPerSeLegacyNggPassthru",
+      "Name": "Gfx10GePcAllocNumLinesPerSeLegacyNggPassthru",
+      "Flags": {
+        "IsHex": true,
+        "RereadSetting": true
+      }
+    },
+    {
+      "Description": "When TRUE, stops the driver from disabling any CUs/WGPs to avoid an NGG deadlock. Typically the driver disables 1 CU on GFX9 and 1 WGP on GFX10. It is up to the user to avoid any dead locks. This can be done by disabling late alloc.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "allowNggOnAllCusWgps",
+      "Name": "AllowNggOnAllCusWgps",
+      "Flags": {
+        "RereadSetting": true
+      }
+    },
+    {
+      "Description": "Value to program GE_PC_ALLOC::NUM_PC_LINES to for NGG-culling pipelines. The value in this setting is per shader-engine. The driver multiplies this value by the number of shader engines and then subtracts 1.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 256
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx10GePcAllocNumLinesPerSeNggCulling",
+      "Name": "Gfx10GePcAllocNumLinesPerSeNggCulling",
+      "Flags": {
+        "IsHex": true,
+        "RereadSetting": true
+      }
+    },
+    {
+      "Description": "When value is greater than zero, then it specifies the number of PS waves to be soft grouped.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 4
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "numPsWavesSoftGroupedPerCu",
+      "Name": "NumPsWavesSoftGroupedPerCu"
+    },
+    {
+      "Description": "When value is greater than zero, then it specifies the number of VS waves to be soft grouped.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "numVsWavesSoftGroupedPerCu",
+      "Name": "NumVsWavesSoftGroupedPerCu"
+    },
+    {
+      "Description": "If true, the HW will alternate VGT's between draws rather than between sets of primitives within a draw. True is safer, but less performant.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "switchVgtOnDraw",
+      "Name": "SwitchVgtOnDraw"
+    },
+    {
+      "Description": "Controls the size of the tess-factor buffer. This size is per-SE, andmeasured in DWORDs.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": "0x3000"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "tessFactorBufferSizePerSe",
+      "Name": "TessFactorBufferSizePerSe"
+    },
+    {
+      "Description": "Vertex walking pattern for tessellation: 0: (default) Donut walking pattern for optimal reuse. 1: Single-ring walking pattern, has suboptimal reuse.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "disableTessDonutWalkPattern",
+      "Name": "TessWalkPattern"
+    },
+    {
+      "Description": "If true, offchip tessellation will always use the maximum number ofLDS buffers possible (based on Chip ID).",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "useMaxOffchipLdsBuffers",
+      "Name": "UseMaxOffchipLdsBuffers"
+    },
+    {
+      "Description": "Load half-packed VS waves, forcing them to use half as much space in the param cache at the expense of inefficient use of ALU resources, if the export count is >= this threshold. This can help performance in some cases.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 16
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "vsHalfPackThreshold",
+      "Name": "VsHalfPackThreshold"
+    },
+    {
+      "Description": "If true, forces the VGT to issue a VS wave as soon as a primgroup isfinished.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "vsForcePartialWave",
+      "Name": "VsForcePartialWave"
+    },
+    {
+      "Description": "Current recommendation from the hardware team is to force PA_SC_CONSERVATIVE_RAST_CNTL.COVERAGE_AA_MASK = 0",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "disableCoverageAaMask",
+      "Name": "DisableCoverageAaMask"
+    },
+    {
+      "Description": "True forces a BATCH_BREAK event when a new pixel shader is bound. False by default.",
+      "Tags": [
+        "Graphics Pipelines"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "batchBreakOnNewPixelShader",
+      "Name": "BatchBreakOnNewPixelShader"
+    },
+    {
+      "Description": "True forces a 'clear_state' command to initialize the context registers to a known state. False will only write the essential subset of registers.",
+      "Tags": [
+        "Graphics Pipelines"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "useClearStateToInitialize",
+      "Name": "UseClearStateToInitialize"
+    },
+    {
+      "Description": "This mask is AND-ed with the driver-decided GS-specific CU_EN mask to further allow limiting of enabled CUs for GS waves. ",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 4294967295
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gsCuEnLimitMask",
+      "Name": "GsCuEnLimitMask",
+      "Flags": {
+        "IsHex": true
+      }
+    },
+    {
+      "Description": "This mask is AND-ed with the driver-decided VS-specific CU_EN mask to further allow limiting of enabled CUs for VS waves. ",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 4294967295
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "vsCuEnLimitMask",
+      "Name": "VsCuEnLimitMask",
+      "Flags": {
+        "IsHex": true
+      }
+    },
+    {
+      "Description": "This mask is AND-ed with the driver-decided PS-specific CU_EN mask to further allow limiting of enabled CUs for PS waves. ",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 4294967295
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "psCuEnLimitMask",
+      "Name": "PsCuEnLimitMask",
+      "Flags": {
+        "IsHex": true
+      }
+    },
+    {
+      "Description": "This mask is AND-ed with the driver-decided CS-specific CU_EN mask to further allow limiting of enabled CUs for CS waves. ",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 4294967295
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "csCuEnLimitMask",
+      "Name": "CsCuEnLimitMask",
+      "Flags": {
+        "IsHex": true
+      }
+    },
+    {
+      "Description": "This contains the value that will be set for SPI_GS_THROTTLE_CNTL1. The default value is overridden in gfx9SettingsLoader.cpp with the loaded ASIC's default value. Manual setting takes precedence over the ASIC's default value.'",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "defaultSpiGsThrottleCntl1",
+      "Name": "DefaultSpiGsThrottleCntl1",
+      "Flags": {
+        "IsHex": true,
+        "RereadSetting": true
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "This contains the value that will be set for SPI_GS_THROTTLE_CNTL2. The default value is overridden in gfx9SettingsLoader.cpp with the loaded ASIC's default value. Manual setting takes precedence over the ASIC's default value.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "defaultSpiGsThrottleCntl2",
+      "Name": "DefaultSpiGsThrottleCntl2",
+      "Flags": {
+        "IsHex": true,
+        "RereadSetting": true
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "ValidValues": {
+        "Values": [
+          {
+            "LogicOp": "LessThanOrEqual",
+            "Description": "Primitive group size.",
+            "Value": 4
+          }
+        ]
+      },
+      "Description": "This controls the value that will be set for the GFX11 specific GE_CNTL::PRIM_GRP_SIZE. Number of primitives in a primgroup. This will be used by Assembler to create primgroups. Valid values are 1-256. The value written to this register field will be this key's value divided by PRIM_AMP_FACTOR. Default to 252 to leave space for a null token broadcast for 2 subgroups in an attribute group.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": 252
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx11GeCntlPrimGrpSize",
+      "Name": "Gfx11GeCntlPrimGrpSize",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx11GeCntlGcrModeDefault",
+            "Value": 0,
+            "Description": "No override - driver will select optimal GCR mode."
+          },
+          {
+            "Name": "Gfx11GeCntlGcrModeEnabled",
+            "Value": 1,
+            "Description": "Force GCR enabled (GCR_DISABLE=0)."
+          },
+          {
+            "Name": "Gfx11GeCntlGcrModeDisabled",
+            "Value": 2,
+            "Description": "Force GCR disabled (GCR_DISABLE=1)."
+          }
+        ],
+        "Name": "Gfx11GeCntlGcrMode"
+      },
+      "Description": "This controls the GCR(Graphics Cache Rinse) usage through GFX11 specific GE_CNTL::GCR_DISABLE.",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx11"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx11GeCntlGcrMode",
+      "Name": "Gfx11GeCntlGcrMode",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Rsrc4GsThrottlePhEn",
+            "Value": 1,
+            "Description": "Whether to enable PH_THROTTLE in SPI_SHADER_PGM_RSRC4_GS."
+          },
+          {
+            "Name": "Rsrc4GsThrottleSpiEn",
+            "Value": 2,
+            "Description": "Whether to enable SPI_THROTTLE in SPI_SHADER_PGM_RSRC4_GS."
+          }
+        ],
+        "Name": "Rsrc4GsThrottle"
+      },
+      "Description": "Bitmask of cases where GS wave throttling will be used",
+      "Tags": [
+        "Graphics Pipelines"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "rsrc4GsThrottleEn",
+      "Name": "Rsrc4GsThrottleEn",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "This contains the size in bytes that we will allocate for attributes through memory. Maximum value is 16MB for the entire chip. The value will 64KB aligned. This value is in bytes. NOTE: If key is not set, default value can vary per ASIC (e.g. Gfx11+ APU default is 512 KiB).",
+      "Tags": [
+        "Graphics Pipelines",
+        "Gfx11"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": 1398101
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx11VertexAttributesRingBufferSizePerSe",
+      "Name": "Gfx11VertexAttributesRingBufferSizePerSe",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "If true, preamble will start pipeline stats and subsequent pipeline queries will be ignored. If false, preamble will not issue any pipeline stats, and a subsequent UniversalCmdBuffer::AddQuery() call with QueryPoolType::PipelineStats will start stats again.",
+      "Tags": [
+        "Graphics Pipelines"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "enablePreamblePipelineStats",
+      "Name": "EnablePreamblePipelineStats"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx11OreoModeBlend",
+            "Value": 0,
+            "Description": "Pipeline is in blend mode (fail-safe that should work for all cases)."
+          },
+          {
+            "Name": "Gfx11OreoModeOpaqueThenBlend",
+            "Value": 1,
+            "Description": "Pipeline operates in Opaque mode unless overridden by register state back to Blend mode (should be the most performant)."
+          },
+          {
+            "Name": "Gfx11OreoModePunchoutThenOpaqueThenBlend",
+            "Value": 2,
+            "Description": "Pipeline operates in Punchout mode unless reg fallback to Opaque then Blend mode."
+          }
+        ],
+        "Name": "Gfx11OreoMode"
+      },
+      "Description": "Enum to control how the OREO feature works.",
+      "Tags": [
+        "Oreo",
+        "Gfx11"
+      ],
+      "Flags": {
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 1
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx11OreoModeControl",
+      "Name": "Gfx11OreoModeControl",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "If true, disables falling back to blend mode when OREO_MODE = 1 (Gfx11OreoModeControl = 1).",
+      "Tags": [
+        "Oreo",
+        "Gfx11",
+        "ForceOreo",
+        "OreoMode"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11ForceOreoMode",
+      "Name": "Gfx11ForceOreoMode",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "If true, forces DB to make every wave conflict with the prior wave..",
+      "Tags": [
+        "Oreo",
+        "Gfx11",
+        "Export",
+        "ExportOrder",
+        "ForceOrder"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11ForceExportOrder",
+      "Name": "Gfx11ForceExportOrderControl",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "Maximum shader prefetch size in bytes.  Set arbitrarily large to use driver default.  Set to zero to disable",
+      "Tags": [
+        "Shader Options",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 4294967295
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "shaderPrefetchSizeBytes",
+      "Name": "ShaderPrefetchSizeBytes"
+    },
+    {
+      "Description": "Specifies the number of entries in the DrawData and PayloadData shader rings for Task and Mesh shaders, per SE. Must be a power-of-2.",
+      "Tags": [
+        "Shader Options",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 256
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "numTsMsDrawEntriesPerSe",
+      "Name": "NumTsMsDrawEntriesPerSe"
+    },
+    {
+      "Description": "Whether or not PAL supports NGG. For quality purposes only.",
+      "Tags": [
+        "NGG Controls",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "nggSupported",
+      "Name": "NggSupported"
+    },
+    {
+      "Description": "Overrides the default value for late-alloc GS for NGG pipelines. Must be set to greater than -1 to take effect and max value must not be greater than 127.",
+      "Tags": [
+        "NGG Controls",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": -1
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "int32",
+      "VariableName": "overrideNggLateAllocGs",
+      "Name": "OverrideNggLateAllocGs",
+      "Flags": {
+        "RereadSetting": true
+      }
+    },
+    {
+      "Description": "Controls the minimum batch bin size used.",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "VariableName": "minBatchBinSize",
+      "Name": "MinBatchBinSize",
+      "Flags": {
+        "IsHex": true,
+        "RereadSetting": true
+      },
+      "Type": "struct",
+      "Structure": [
+        {
+          "Description": "Minimum batch bin size width.  Value must be a power-of-two between 16 and 512.  Set to 0 to use default limit.",
+          "Type": "uint16",
+          "VariableName": "width",
+          "Name": "Width",
+          "Defaults": {
+            "Default": 0
+          }
+        },
+        {
+          "Description": "Minimum batch bin size height.  Value must be a power-of-two between 16 and 512.  Set to 0 to use default limit.",
+          "Type": "uint16",
+          "VariableName": "height",
+          "Name": "Height",
+          "Defaults": {
+            "Default": 0
+          }
+        }
+      ]
+    },
+    {
+      "Description": "If true, ignore Depth when calculating bin size if Color is bound.",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "ignoreDepthForBinSizeIfColorBound",
+      "Name": "IgnoreDepthForBinSizeIfColorBound"
+    },
+    {
+      "Description": "The value to program to PA_SC_BINNER_CNTL_0::BINNING_MODE when the driver disables binning. Valid values are 2 and 3.",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 3
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "disableBinningMode",
+      "Name": "DisableBinningMode"
+    },
+    {
+      "Description": "Maximum amount of parameter storage per batch when not using NGG. The maximum is value 128. Zero means calculate an optimal value based on the hardware configuration. On GFX9, this value is in units of 2 param cache lines..",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "binningMaxAllocCountLegacy",
+      "Name": "BinningMaxAllocCountLegacy"
+    },
+    {
+      "Description": "Maximum amount of parameter storage per batch when using NGG with the on-chip parameter cache. Zero means calculate an optimal value based on the hardware configuration. On GFX9, this value is in units of 2 param cache lines.",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "binningMaxAllocCountNggOnChip",
+      "Name": "BinningMaxAllocCountNggOnChip"
+    },
+    {
+      "Description": "Maximum number of FPOV tokens allowed per batch. Zero means no limit.",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 63
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "binningFpovsPerBatch",
+      "Name": "BinningFpovsPerBatch"
+    },
+    {
+      "Description": "Value for the PA_SC_BINNER_CNTL_1::OPTIMAL_BIN_SELECTION register field.",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "binningOptimalBinSelection",
+      "Name": "BinningOptimalBinSelection"
+    },
+    {
+      "Description": "Number of RBs to use in bin size calculations. A value of zero means use the number of RBs on the HW. GFX10 and later only",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "binningBinSizeRbOverride",
+      "Name": "BinningBinSizeRbOverride"
+    },
+    {
+      "Description": "Number of pipes to use in bin size calculations. A value of zero means use the number of pipes on the HW. GFX10 and later only",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "binningBinSizePipesOverride",
+      "Name": "BinningBinSizePipesOverride"
+    },
+    {
+      "Description": "If true, disable Binning when the PS uses UAV append or consume",
+      "Tags": [
+        "PBB and DFSM",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "disableBinningAppendConsume",
+      "Name": "BinningDisableBinningAppendConsume"
+    },
+    {
+      "Description": "Use this prefetch method when the client sets prefetchShaders on a graphics command stream.",
+      "Tags": [
+        "Prefetching (L2 Cache Warming)"
+      ],
+      "Defaults": {
+        "Default": "PrefetchCpDma"
+      },
+      "ValidValues": {
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "PrefetchDisabled",
+            "Value": 0,
+            "Description": "Never prefetch."
+          },
+          {
+            "Name": "PrefetchCpDma",
+            "Value": 1,
+            "Description": "Use CP DMA to stream data into the L2."
+          },
+          {
+            "Name": "PrefetchPrimeUtcL2",
+            "Value": 2,
+            "Description": "Just prime the UTCL2, not the data L2."
+          }
+        ],
+        "Name": "PrefetchMethod"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "shaderPrefetchMethodGfx",
+      "Name": "ShaderPrefetchMethodGfx"
+    },
+    {
+      "Description": "Use this prefetch method when the client sets prefetchShaders on an async compute command stream.",
+      "Tags": [
+        "Prefetching (L2 Cache Warming)"
+      ],
+      "Defaults": {
+        "Default": "PrefetchPrimeUtcL2"
+      },
+      "ValidValues": {
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "PrefetchDisabled",
+            "Value": 0,
+            "Description": "Never prefetch."
+          },
+          {
+            "Name": "PrefetchCpDma",
+            "Value": 1,
+            "Description": "Use CP DMA to stream data into the L2."
+          },
+          {
+            "Name": "PrefetchPrimeUtcL2",
+            "Value": 2,
+            "Description": "Just prime the UTCL2, not the data L2."
+          }
+        ],
+        "Name": "PrefetchMethod"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "shaderPrefetchMethodAce",
+      "Name": "ShaderPrefetchMethodAce"
+    },
+    {
+      "Description": "Use this prefetch method when the client sets prefetchCommands on a graphics command stream.",
+      "Tags": [
+        "Prefetching (L2 Cache Warming)"
+      ],
+      "Defaults": {
+        "Default": "PrefetchCpDma"
+      },
+      "ValidValues": {
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "PrefetchDisabled",
+            "Value": 0,
+            "Description": "Never prefetch."
+          },
+          {
+            "Name": "PrefetchCpDma",
+            "Value": 1,
+            "Description": "Use CP DMA to stream data into the L2."
+          }
+        ],
+        "Name": "PrefetchMethod"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "commandPrefetchMethodGfx",
+      "Name": "CommandPrefetchMethodGfx"
+    },
+    {
+      "Description": "Use this prefetch method when the client sets prefetchCommands on an async compute command stream.",
+      "Tags": [
+        "Prefetching (L2 Cache Warming)"
+      ],
+      "Defaults": {
+        "Default": "PrefetchDisabled"
+      },
+      "ValidValues": {
+        "IsExclusive": true,
+        "Values": [
+          {
+            "Name": "PrefetchDisabled",
+            "Value": 0,
+            "Description": "Never prefetch."
+          },
+          {
+            "Name": "PrefetchCpDma",
+            "Value": 1,
+            "Description": "Use CP DMA to stream data into the L2."
+          }
+        ],
+        "Name": "PrefetchMethod"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "commandPrefetchMethodAce",
+      "Name": "CommandPrefetchMethodAce"
+    },
+    {
+      "Description": "Controls whether anisotropic filtering optimizations are enabled.",
+      "Tags": [
+        "Texture Filtering",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "anisoFilterOptEnabled",
+      "Name": "AnisoFilterOptEnabled"
+    },
+    {
+      "Description": "Controls whether the round-up logic for samplers is enabled.",
+      "Tags": [
+        "Texture Filtering",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "samplerCeilingLogicEnabled",
+      "Name": "CeilingLogicEnabled"
+    },
+    {
+      "Description": "Controls whether rounding of values coming out of the normalizer is enabled.",
+      "Tags": [
+        "Texture Filtering",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "samplerPrecisionFixEnabled",
+      "Name": "PrecisionFixEnabled"
+    },
+    {
+      "Description": "Controls the value of the PERF_MIP field in Sampler SRD's.",
+      "Tags": [
+        "Texture Filtering",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "samplerPerfMip",
+      "Name": "SamplerPerfMip"
+    },
+    {
+      "Description": "Controls the value of the anisotropy threshold for Sampler SRD's.",
+      "Tags": [
+        "Texture Filtering",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "samplerAnisoThreshold",
+      "Name": "SamplerAnisoThreshold"
+    },
+    {
+      "Description": "Controls the value of the anisotropy bias for Sampler SRD's.",
+      "Tags": [
+        "Texture Filtering",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "samplerAnisoBias",
+      "Name": "SamplerAnisoBias"
+    },
+    {
+      "Description": "Controls the value of the secondary anisotropy bias for Sampler SRD's.",
+      "Tags": [
+        "Texture Filtering",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "samplerSecAnisoBias",
+      "Name": "SamplerSecAnisoBias"
+    },
+    {
+      "Description": "If the workaround is enabled, then non-TS events will be replaced with their corresponding TS event",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_NAVI3X"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waReplaceEventsWithTsEvents",
+      "Name": "WaReplaceEventsWithTsEvents"
+    },
+    {
+      "Description": "If the workaround is enabled, then a SQ_NON_EVENT will be added to the postabmle of graphics command buffers",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_NAVI3X"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waAddPostambleEvent",
+      "Name": "WaAddPostambleEvent"
+    },
+    {
+      "Description": "If the workaround is enabled, then PA_SU_LINE_STIPPLE_CNTL.LINE_STIPPLE_RESET will be set to 2 for all non-stipple draws",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waLineStippleReset",
+      "Name": "WaLineStippleReset"
+    },
+    {
+      "Description": "If the workaround is enabled, then AUTO_FLUSH_MODE settings will be inverted.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waAutoFlushModePolarityInversed",
+      "Name": "WaAutoFlushModePolarityInversed"
+    },
+    {
+      "Description": "If the workaround is enabled, then only those mips up to and including the first mip in the mip tail will be compressed.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waRestrictMetaDataUseInMipTail",
+      "Name": "WaRestrictMetaDataUseInMipTail"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "NoFix",
+            "Value": 0,
+            "Description": "UAV stencil writes occur with no workaround"
+          },
+          {
+            "Name": "GraphicsCopies",
+            "Value": 1,
+            "Description": "If set, image-to-image copies will always use a graphics copy"
+          },
+          {
+            "Name": "ReCopyVrsData",
+            "Value": 2,
+            "Description": "If set, copies will occur as normal but the VRS data will be marked as dirty and will be fixed on the next draw"
+          }
+        ],
+        "Name": "WaVrsStencilUav"
+      },
+      "Description": "Shader writes to UAV stencil surfaces will corrupt any associated hTile data.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": "NoFix"
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "waVrsStencilUav",
+      "Name": "WaVrsStencilUav"
+    },
+    {
+      "Description": "If the workaround is enabled, then non-copy ROP3 will disable the DCC overwrite combiner.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waLogicOpDisablesOverwriteCombiner",
+      "Name": "WaLogicOpDisablesOverwriteCombiner"
+    },
+    {
+      "Description": "If the workaround is enabled, then rotated swizzle modes will disable the DCC overwrite combiner.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waRotatedSwizzleDisablesOverwriteCombiner",
+      "Name": "WaRotatedSwizzleDisablesOverwriteCombiner"
+    },
+    {
+      "Description": "If the workaround is enabled, then disabling fMask compression also sets the DISABLE_FMASK_NOFETCH_OPT bit.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waDisableFmaskNofetchOpOnFmaskCompressionDisable",
+      "Name": "WaDisableFmaskNofetchOpOnFmaskCompressionDisable"
+    },
+    {
+      "Description": "If the workaround is enabled, then vrs with depth stence exports will be disabled.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waDisableVrsWithDsExports",
+      "Name": "WaDisableVrsWithDsExports"
+    },
+    {
+      "Description": "Fixes issues related to unexposed MSAA samples.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waFixPostZConservativeRasterization",
+      "Name": "WaFixPostZConservativeRasterization"
+    },
+    {
+      "Description": "Fixes issues related to invalid values associated with VGT_TESS_DISTRIBUTION.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waClampQuadDistributionFactor",
+      "Name": "WaClampQuadDistributionFactor"
+    },
+    {
+      "Description": "Controls whether the workaround waWrite1xAASampleLocationsToZero is active. FALSE:   Forces the workaround off. TRUE:    Forces the workaround on. Not Set: Allows the driver to decide, based on Chip ID.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waWrite1xAASampleLocationsToZero",
+      "Name": "WaWrite1xAASampleLocationsToZero"
+    },
+    {
+      "Description": "The overwrite combiner marks something as overwritten even if there are ensuingquads to the same sector that need dest",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waColorCacheControllerInvalidEviction",
+      "Name": "WaColorCacheControllerInvalidEviction"
+    },
+    {
+      "Description": "This workaround forces hTile data to be Z-only for images with multiple mip levels.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waForceZonlyHtileForMipmaps",
+      "Name": "WaForceZonlyHtileForMipmaps"
+    },
+    {
+      "Description": "The overwrite combiner takes only the target mask into consideration while decidingto overwrite combine whereas the other parts of the CB decide on shader mask andtarget mask. This discrepancy may lead to the overwrite combiner incorrectly signalinga read optimization when shader and target mask are different",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waOverwriteCombinerTargetMaskOnly",
+      "Name": "WaOverwriteCombinerTargetMaskOnly"
+    },
+    {
+      "Description": "Controls if hTile prefetch is disbled.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waDisableHtilePrefetch",
+      "Name": "WaDisableHtilePrefetch"
+    },
+    {
+      "Description": "Controls if STALLED_POPS is used or not.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waMiscPopsMissedOverlap",
+      "Name": "WaMiscPopsMissedOverlap"
+    },
+    {
+      "Description": "Controls if whenever a context roll is detected whether the scissor registers will be rewritten.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waMiscScissorRegisterChange",
+      "Name": "WaMiscScissorRegisterChange"
+    },
+    {
+      "Description": "Controls if a PS_PARTIAL_FLUSH is used whenever the scissor top-left or bottom-right registers change.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waMiscPsFlushScissorChange",
+      "Name": "WaMiscPsFlushScissorChange"
+    },
+    {
+      "Description": "If set, hTile buffers support non-zero pipe-bank xor values.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waHtilePipeBankXorMustBeZero",
+      "Name": "WaHtilePipeBankXorMustBeZero"
+    },
+    {
+      "Description": "If set PAL will not set 24_8 hw format for 24-32bit converted depth surfaces, this will fix fast clear expansion with TC compatible surfaces (but also return incorrect unclamped border color.)",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waDisable24BitHWFormatForTCCompatibleDepth",
+      "Name": "WaDisable24BitHWFormatForTCCompatibleDepth"
+    },
+    {
+      "Description": "On Gfx9, the DB can delay tile write requests in such a way that its pending write ack counters can underflow while processing EOP timestamps. The workaround is to issue a ZPASS_DONE event before each timestamp event because it will add pending writes which are lower priority than the tile writes so they will fence the delayed writes. Defaults to TRUE for Gfx9, FALSE for others.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waDummyZpassDoneBeforeTs",
+      "Name": "WaDummyZpassDoneBeforeTs"
+    },
+    {
+      "Description": "On Gfx9, the meta-addressing equation can theoretically map multiple pixels to the same This fix prevents that from happening.  Meta-equation generated by driver must match the meta equation as generated by the silicon.  Products that do not have the fix have no HW configurations that expose the problem.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waMetaAliasingFixEnabled",
+      "Name": "WaMetaAliasingFixEnabled"
+    },
+    {
+      "Description": "If set, align image allocation size up to fragment size when Cmask is present, but continue to issue GCN ranged syncs operations using the original, unpadded size.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waCmaskImageSyncs",
+      "Name": "WaCmaskImageSyncs"
+    },
+    {
+      "Description": "If set, SDMA can not access meta-data (compression) surfaces.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waSdmaPreventCompressedSurfUse",
+      "Name": "WaSdmaPreventCompressedSurfUse"
+    },
+    {
+      "Description": "If set, PAL will insert a VGT_FLUSH between a pipeline transition from a NGG to a legacy GS.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waVgtFlushNggToLegacyGs",
+      "Name": "WaVgtFlushNggToLegacyGs"
+    },
+    {
+      "Description": "If set, PAL will insert a VGT_FLUSH between a pipeline transition from a NGG to a legacy pipeline.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waVgtFlushNggToLegacy",
+      "Name": "WaVgtFlushNggToLegacy"
+    },
+    {
+      "Description": "If true, enables prefetching of Index buffer pages prior to draws in NGG piplines.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waEnableIndexBufferPrefetchForNgg",
+      "Name": "WaEnableIndexBufferPrefetchForNgg"
+    },
+    {
+      "Description": "If true, enables Z16_UNORM 1xAA uninitialized decompress hang workaround.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waZ16Unorm1xAaDecompressUninitialized",
+      "Name": "WaZ16Unorm1xAaDecompressUninitialized"
+    },
+    {
+      "Description": "If true, forces LateAllocGs to always be 0.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waLateAllocGs0",
+      "Name": "WaLateAllocGs0"
+    },
+    {
+      "Description": "If true, whenever an index buffer is bound with zero size we instead bind an internal index buffer with a single zero entry to prevent a hang in the GE.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waIndexBufferZeroSize",
+      "Name": "WaIndexBufferZeroSize"
+    },
+    {
+      "Description": "If true, whenever a POPS (Primitive Order Pixel Shader) pipeline is bound, we need to set DB_RENDER_OVERRIDE2::PARTIAL_SQUAD_LAUNCH = PSLC_ON_HANG_ONLY to prevent a hang..",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waStalledPopsMode",
+      "Name": "WaStalledPopsMode"
+    },
+    {
+      "Description": "If true, IB2's cannot be used on the constant engine (CE).",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalKey",
+      "Type": "bool",
+      "VariableName": "waCeDisableIb2",
+      "Name": "WaCeDisableIb2"
+    },
+    {
+      "Description": "If true, disable stencil compression for ZS images for which a stencil only depth target could be created",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalKey",
+      "Type": "bool",
+      "VariableName": "waDisableSCompressSOnly",
+      "Name": "WaDisableSCompressSOnly"
+    },
+    {
+      "Description": "If true, instance packing will be disabled when query pipeline statistics  using *_ADJACENCY primitive and instance > 1.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waDisableInstancePacking",
+      "Name": "WaDisableInstancePacking"
+    },
+    {
+      "Description": "If true, disable GRBM Register stalling for SQTT",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waNoSqttRegStall",
+      "Name": "WaNoSqttRegStall"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx10VrsHtileEncodingTwoBit",
+            "Value": 1,
+            "Description": "Two bit hTile encoding of VRS data"
+          },
+          {
+            "Name": "Gfx10VrsHtileEncodingFourBit",
+            "Value": 2,
+            "Description": "Four bit hTile encoding of VRS data"
+          }
+        ],
+        "Name": "VrsHtileEncoding"
+      },
+      "Description": "Controls whether hTile will use two bit or four bit encoding of VRS shading rate",
+      "Tags": [
+        "VRS",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": "Gfx10VrsHtileEncodingTwoBit"
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "enum",
+      "VariableName": "vrsHtileEncoding",
+      "Name": "VrsHtileEncoding"
+    },
+    {
+      "Description": "Controls FORCE_VRS_RATE_FINE setting.  False means to use the VRS rate generated by VRS rate combiners as shading rate; true forces VRS rate to 1x1 if the rate generated by rate combiners is coarse rate",
+      "Tags": [
+        "VRS",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "vrsForceRateFine",
+      "Name": "VrsForceRateFine"
+    },
+    {
+      "Description": "The device owns a depth buffer used for VRS data storage in the event of the app not binding their own depth buffer.  If this setting is true, then the depth buffer is hTile only; otherwise, it also contains a stencil plane.",
+      "Tags": [
+        "VRS",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "privateDepthIsHtileOnly",
+      "Name": "PrivateDepthIsHtileOnly"
+    },
+    {
+      "Description": "If true, NULL source images are handled by modifying the combiner state.  False causes the depth buffer to be updated",
+      "Tags": [
+        "VRS",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "optimizeNullSourceImage",
+      "Name": "OptimizeNullSourceImage"
+    },
+    {
+      "Description": "Controls the size of the VRS image that is always allocated by PAL whether VRS is used or not. The high 16 bits are the height of the image and the low 16 bits are the width. A size of 0 will have undefined behavior for any app that uses VRS image combiners.",
+      "Tags": [
+        "VRS",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 1073758208
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "vrsImageSize",
+      "Name": "VrsImageSize",
+      "Flags": {
+        "IsHex": true
+      }
+    },
+    {
+      "Description": "If true, prevents enabling BIG_PAGE for resources that could share a 64KiB memory region with a non-BIG_PAGE resource.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waUtcL0InconsistentBigPage",
+      "Name": "WaUtcL0InconsistentBigPage"
+    },
+    {
+      "Description": "If the workaround is enabled, then 4x MSAA Depth/Stencil surfaces will set the number of z planes for decompress to 2 in order to avoid a hang associated with setting iterate_256 to 1.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waTwoPlanesIterate256",
+      "Name": "WaTwoPlanesIterate256"
+    },
+    {
+      "Description": "If the workaround is enabled, when legacy tessellation is enabled with wireframe mode, we need to disable vertex reuse or suffer corruption.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waTessIncorrectRelativeIndex",
+      "Name": "WaTessIncorrectRelativeIndex"
+    },
+    {
+      "Description": "If the workaround is enabled and NGG is enabled we need to limit LATE_ALLOC_GS to <= 64.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waLimitLateAllocGsNggFifo",
+      "Name": "WaLimitLateAllocGsNggFifo"
+    },
+    {
+      "Description": "If the workaround is enabled, we need to clamp GE_CNTL::VERT_GRP_SIZE to avoid a hang due to an issue in PC space allocation.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waClampGeCntlVertGrpSize",
+      "Name": "WaClampGeCntlVertGrpSize"
+    },
+    {
+      "Description": "If the workaround is enabled, ignore thread-trace finish results and flush the pipe instead due to RB harvesting issues.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waBadSqttFinishResults",
+      "Name": "WaBadSqttFinishResults"
+    },
+    {
+      "Description": "If the workaround is enabled, we to issue a VGT_FLUSH between legacy GS pipelines that have different VGT_GS_MODE::CUT_MODE values.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waLegacyGsCutModeFlush",
+      "Name": "WaLegacyGsCutModeFlush"
+    },
+    {
+      "ValidValues": {
+        "IsEnum": true,
+        "Values": [
+          {
+            "Name": "Gfx10SdmaBypassMallOnRead",
+            "Value": 1,
+            "Description": "Use MALL for SDMA read access"
+          },
+          {
+            "Name": "Gfx10SdmaBypassMallOnWrite",
+            "Value": 2,
+            "Description": "Use MALL for SDMA write access"
+          },
+          {
+            "Name": "Gfx10SdmaBypassMallOnDefault",
+            "Value": 3,
+            "Description": "Use MALL in default settings"
+          }
+        ],
+        "Name": "Gfx10SdmaBypassMall"
+      },
+      "Description": "Bitmask of cases where SDMA accesses will bypass the MALL",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsBitmask": true,
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 3
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "sdmaBypassMall",
+      "Name": "SdmaBypassMall"
+    },
+    {
+      "Description": "Enables the mall cursor cache option",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "enableMallCursorCache",
+      "Name": "EnableMallCursorCache"
+    },
+    {
+      "Description": "Determines if GFX or Compute is used to fast clear SingleSampled DepthStencil surfaces. Value is in units of (pix width x height x depth). Values <= this will take GFX else Compute.",
+      "Tags": [
+        "RPM"
+      ],
+      "Defaults": {
+        "Default": 2097152
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "depthStencilFastClearComputeThresholdSingleSampled",
+      "Name": "DepthStencilFastClearComputeThresholdSingleSampled",
+      "Flags": {
+        "IsHex": false,
+        "RereadSetting": true
+      }
+    },
+    {
+      "Description": "Determines if GFX or Compute is used to fast clear MultiSampled DepthStencil surfaces. Value is in units of (pix width x height x depth). Values <= this will take GFX else Compute.",
+      "Tags": [
+        "RPM"
+      ],
+      "Defaults": {
+        "Default": 4194304
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "depthStencilFastClearComputeThresholdMultiSampled",
+      "Name": "DepthStencilFastClearComputeThresholdMultiSampled",
+      "Flags": {
+        "IsHex": false,
+        "RereadSetting": true
+      }
+    },
+    {
+      "Description": "This value is used to program PA_SC_NGG_MODE_CNTL::MAX_FPOVS_IN_WAVE. When the number of FPOVs in a wave exceeds MAX_FPOVS_IN_WAVE, the next FPOV would break wave. Legal values are 0 to 255.",
+      "Tags": [
+        "General",
+        "Gfx10"
+      ],
+      "Defaults": {
+        "Default": 0
+      },
+      "ValidValues": {
+        "Values": [
+          {
+            "Description": "1 FPOV will break the wave.",
+            "Value": 0
+          },
+          {
+            "LogicOp": "LessThanOrEqual",
+            "Description": "Number of FPOVs * 2 that will break the wave.",
+            "Value": 255
+          }
+        ]
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "gfx10MaxFpovsInWave",
+      "Name": "Gfx10MaxFpovsInWave",
+      "Flags": {
+        "IsHex": false,
+        "RereadSetting": true
+      }
+    },
+    {
+      "Description": "If we should use EOP timestamp waits on ACE engines instead of CS_PARTIAL_FLUSH events. This is intended as a debug switch.",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "disableAceCsPartialFlush",
+      "Name": "DisableAceCsPartialFlush"
+    },
+    {
+      "Description": "Override the value of GB_ADDR_CONFIG sent to the address library with this value. This setting is intended for Architecture Modeling purposes only and cannot be safely modified. 0 means do not override",
+      "Tags": [
+        "General",
+        "Gfx9"
+      ],
+      "Flags": {
+        "IsHex": true
+      },
+      "Defaults": {
+        "Default": 0
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "uint32",
+      "VariableName": "addrLibGbAddrConfigOverride",
+      "Name": "AddrLibGbAddrConfigOverride"
+    },
+    {
+      "Name": "Gfx102NonLocalDestPreferCompute",
+      "Tags": [
+        "General",
+        "Performance",
+        "Gfx102"
+      ],
+      "Defaults": {
+        "Default": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "nonLocalDestPreferCompute",
+      "Description": "Prefer compute for non-local copies on gfx10.2+. This can increase PCIe throughput."
+    },
+    {
+      "Name": "Gfx103PlusDisableAsymmetricWgpForPs",
+      "Tags": [
+        "General",
+        "Performance"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx103PlusDisableAsymmetricWgpForPs",
+      "Description": "On WGP harvesting asymmetric configuration, we scan all of the SAs to find the minimal number of WGPs to override the psCuEnLimitMask setting for performance."
+    },
+    {
+      "Name": "EnableHoleyOptimization",
+      "Tags": [
+        "General",
+        "Performance"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "enableHoleyOptimization",
+      "Description": "Enable the 'holey' optimization to minimize CP overhead. Unnecessary for ASICs running F32 cores."
+    },
+    {
+      "Name": "Gfx11EnableContextRegPairOptimization",
+      "Tags": [
+        "General",
+        "Performance",
+        "GFX11"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11EnableContextRegPairOptimization",
+      "Description": "Optimize draw launch rate by enabling use of SET_CONTEXT_REG_PAIR_PACKED packets. GFX11 specific and overridden to true unless this setting is explicitly set to false.",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Name": "Gfx11EnableShRegPairOptimization",
+      "Tags": [
+        "General",
+        "Performance",
+        "GFX11"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11EnableShRegPairOptimization",
+      "Description": "Optimize draw launch rate by enabling use of SET_SH_REG_PAIR_PACKED packets including compute on graphics user data. GFX11 specific and overridden to true unless this setting is explicitly set to false.",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Name": "Gfx11EnableShRegPairOptimizationCs",
+      "Tags": [
+        "General",
+        "Performance",
+        "GFX11"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11EnableShRegPairOptimizationCs",
+      "Description": "Optimize draw launch rate by enabling use of SET_SH_REG_PAIR_PACKED packets for compute on ace. GFX11 specific and overridden to true unless this setting is explicitly set to false.",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Name": "Gfx11EnableZpassPacketOptimization",
+      "Tags": [
+        "General",
+        "Performance",
+        "GFX11"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "gfx11EnableZpassPacketOptimization",
+      "Description": "Reduce RS64 CP overhead by writing a simplified EVENT_WRITE packet, EVENT_WRITE_ZPASS. GFX11 specific and overridden to true unless this setting is explicitly set to false.",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "Perfcounter workaround which samples all counters in the running state if SQ counters are on.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waNeverStopSqCounters",
+      "Name": "WaNeverStopSqCounters"
+    },
+    {
+      "Description": "This WA fixup the SQG TT WPTR field to be the correct offset value for the case that the WPTR field stores the actual address that write pointer is at.",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waSqgTtWptrOffsetFixup",
+      "Name": "WaSqgTtWptrOffsetFixup"
+    },
+    {
+      "Description": "This WA fixup a Navi3x CB perfcounter hardware bug, which will cause CB counters stuck at 0 if PERFCOUNTER_STOP is received. If enabled, PAL will remove use of PERFCOUNTER_STOP.  ",
+      "Tags": [
+        "Hardware Workarounds"
+      ],
+      "Defaults": {
+        "Default": false
+      },
+      "Flags": {
+        "RereadSetting": true
+      },
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ],
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waCbPerfCounterStuckZero",
+      "Name": "WaCbPerfCounterStuckZero"
+    },
+    {
+      "Description": "WA to force PRE_PIX_SHADER barrier sync point for PWS+.",
+      "Tags": [
+        "Hardware Workarounds",
+        "Gfx11",
+        "PWS"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waForcePrePixShaderWaitPoint",
+      "Name": "WaForcePrePixShaderWaitPoint",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "WA to force LOCK*THRESHOLD for HS, GS, and CS to 0.",
+      "Tags": [
+        "Hardware Workarounds",
+        "Gfx11"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waForceLockThresholdZero",
+      "Name": "WaForceLockThresholdZero",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "WA to force SPI_GS_THROTTLE_CNTL2.SPI_THROTTLE_MODE != 0.",
+      "Tags": [
+        "Hardware Workarounds",
+        "Gfx11"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waForceSpiThrottleModeNonZero",
+      "Name": "WaForceSpiThrottleModeNonZero",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "Set VS_XY_NAN_TO_INF = 0 to disable PA stereo rendering",
+      "Tags": [
+        "Hardware Workarounds",
+        "Gfx11"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waSetVsXyNanToInfZero",
+      "Name": "WaSetVsXyNanToInfZero",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    },
+    {
+      "Description": "Set DB_RENDER_CONTROL.MAX_ALLOWED_TILES_IN_WAVE one smaller due to incorrect calculation in the DB cachelines.",
+      "Tags": [
+        "Hardware Workarounds",
+        "Gfx11"
+      ],
+      "Flags": {
+        "RereadSetting": true
+      },
+      "Defaults": {
+        "Default": false
+      },
+      "Scope": "PrivatePalGfx9Key",
+      "Type": "bool",
+      "VariableName": "waIncorrectMaxAllowedTilesInWave",
+      "Name": "WaIncorrectMaxAllowedTilesInWave",
+      "OrBuildTypes": [
+        "PAL_BUILD_GFX11"
+      ]
+    }
+  ]
+}
