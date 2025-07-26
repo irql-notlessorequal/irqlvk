@@ -1,0 +1,56 @@
+name: Build AMDVLK for LLPC
+
+on:
+  schedule:
+    - cron:  "0 */12 * * *"
+  workflow_dispatch:
+
+jobs:
+  build-and-push-amdvlk:
+    name: "Features: ${{ matrix.feature-set }}"
+    if: github.repository == 'GPUOpen-Drivers/llpc'
+    runs-on: ${{ matrix.host-os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        host-os:        ["ubuntu-20.04"]
+        image-template: ["amdvlkadmin/amdvlk_%s%s:nightly"]
+        branch:         [dev]
+        config:         [Release]
+        feature-set:    ["+gcc", "+gcc+assertions",
+                         "+clang",
+                         "+clang+shadercache+ubsan+asan",
+                         "+clang+shadercache+ubsan+asan+assertions"]
+        generator:      [Ninja]
+    steps:
+      - name: Free up disk space
+        run: |
+          echo 'Before:' && df -h
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/hostedtoolcache/boost /opt/ghc \
+                      /usr/lib/jvm /opt/hostedtoolcache/go /opt/hostedtoolcache/CodeQL /opt/az \
+                      /usr/share/swift /usr/local/.ghcup /usr/local/graalvm /usr/local/lib/node_modules
+          echo 'After:' && df -h
+      - name: Checkout LLPC
+        run: |
+          git clone https://github.com/${GITHUB_REPOSITORY}.git .
+          git checkout ${GITHUB_SHA}
+      - name: Generate Docker image tag string
+        run: |
+          CONFIG_LOWER=$(echo "${{ matrix.config }}" | tr "[:upper:]" "[:lower:]")
+          FEATURES_LOWER=$(echo "${{ matrix.feature-set }}" | tr "+" "_")
+          TAG=$(printf "${{ matrix.image-template }}" "$CONFIG_LOWER" "$FEATURES_LOWER")
+          echo "IMAGE_TAG=$TAG" | tee -a $GITHUB_ENV
+      - name: Build and Test AMDVLK with Docker
+        run: |
+          docker build . --file docker/amdvlk.Dockerfile \
+                         --build-arg BRANCH="${{ matrix.branch }}" \
+                         --build-arg CONFIG="${{ matrix.config }}" \
+                         --build-arg FEATURES="${{ matrix.feature-set }}" \
+                         --build-arg GENERATOR="${{ matrix.generator }}" \
+                         --tag "$IMAGE_TAG"
+      - name: Login Docker
+        run: |
+          echo "${{ secrets.DOCKER_PWD }}" | docker login -u amdvlkadmin --password-stdin
+      - name: Push the new image
+        run: |
+          docker push "$IMAGE_TAG"

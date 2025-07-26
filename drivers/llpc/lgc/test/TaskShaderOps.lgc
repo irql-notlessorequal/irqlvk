@@ -1,0 +1,109 @@
+; Test that the operations of task shader are handled as expected.
+
+; RUN: lgc -mcpu=gfx1030 --emit-llvm -v -o=- - <%s | FileCheck --check-prefixes=CHECK %s
+
+; In this test case, we check if the operations of a task shader is correctly handled. Three operations
+; are Read TaskPayload, Write TaskPayload, EmitMeshTasks.
+;
+; CHECK-LABEL: _amdgpu_cs_main
+; CHECK: .entry:
+; CHECK: [[groupIdX:%[0-9]*]] = extractelement <3 x i32> %WorkgroupId, i64 0
+; CHECK-NEXT: [[groupIdY:%[0-9]*]] = extractelement <3 x i32> %WorkgroupId, i64 1
+; CHECK-NEXT: [[groupIdZ:%[0-9]*]] = extractelement <3 x i32> %WorkgroupId, i64 2
+; CHECK-NEXT: [[dimY:%[0-9]*]] = extractelement <3 x i32> %meshTaskDispatchDims, i64 1
+; CHECK-NEXT: [[tempResult0:%[0-9]*]] = mul i32 [[groupIdZ]], [[dimY]]
+; CHECK-NEXT: [[tempResult1:%[0-9]*]] = add i32 [[tempResult0]], [[groupIdY]]
+; CHECK-NEXT: [[dimX:%[0-9]*]] = extractelement <3 x i32> %meshTaskDispatchDims, i64 0
+; CHECK-NEXT: [[tempResult2:%[0-9]*]] = mul i32 [[tempResult1]], [[dimX]]
+; CHECK-NEXT: [[flattenId:%[0-9]*]] = add i32 [[tempResult2]], [[groupIdX]]
+; CHECK-NEXT: [[entryIndex:%[0-9]*]] = add i32 [[flattenId]], %meshTaskRingIndex
+; CHECK: [[drawDataRingDescPtr:%[0-9]*]] = getelementptr <4 x i32>, ptr addrspace(4) %{{[0-9]*}}, i64 14
+; CHECK-NEXT: [[drawDataRingDesc:%[0-9]*]] = load <4 x i32>, ptr addrspace(4) [[drawDataRingDescPtr]], align 16
+; CHECK: [[payloadRingDescPtr:%[0-9]*]] = getelementptr <4 x i32>, ptr addrspace(4) %{{[0-9]*}}, i64 13
+; CHECK-NEXT: [[payloadRingDesc:%[0-9]*]] = load <4 x i32>, ptr addrspace(4) [[payloadRingDescPtr]], align 16
+; CHECK: [[ringSize:%[0-9]*]] = extractelement <4 x i32> [[payloadRingDesc]], i64 2
+; CHECK-NEXT: [[numEntries:%[0-9]*]] = lshr i32 [[ringSize]], 14
+; CHECK-NEXT: [[wrapMask:%[0-9]*]] = add nuw nsw i32 [[numEntries]], 262143
+; CHECK-NEXT: [[wrappedEntryIndex:%[0-9]*]] = and i32 [[entryIndex]], [[wrapMask]]
+; CHECK-NEXT: [[entryOffset:%[0-9]*]] = shl i32 [[wrappedEntryIndex]], 14
+; CHECK: [[baseAddrLo:%[0-9]*]] = extractelement <4 x i32> [[payloadRingDesc]], i64 0
+; CHECK-NEXT: [[descWord1:%[0-9]*]] = extractelement <4 x i32> [[payloadRingDesc]], i64 1
+; CHECK-NEXT: [[baseAddrHi:%[0-9]*]] = and i32 [[descWord1]], 65535
+; CHECK-NEXT: [[baseAddrTmp0:%[0-9]*]] = insertelement <2 x i32> poison, i32 [[baseAddrLo]], i64 0
+; CHECK-NEXT: [[baseAddrTmp1:%[0-9]*]] = insertelement <2 x i32> [[baseAddrTmp0]], i32 [[baseAddrHi]], i64 1
+; CHECK-NEXT: [[baseAddr:%[0-9]*]] = bitcast <2 x i32> [[baseAddrTmp1]] to i64
+; CHECK-NEXT: [[wrappedEntryIndex64:%[0-9]*]] = zext i32 [[entryOffset]] to i64
+; CHECK-NEXT: [[newBaseAddr:%[0-9]*]] = add nuw nsw i64 [[baseAddr]], [[wrappedEntryIndex64]]
+; CHECK-NEXT: [[newDescWord0:%[0-9]*]] = trunc i64 [[newBaseAddr]] to i32
+; CHECK-NEXT: [[newBaseAddrHi64:%[a-z.]*]] = lshr i64 [[newBaseAddr]], 32
+; CHECK-NEXT: [[newBaseAddrHi32:%[0-9]*]] = trunc i64 [[newBaseAddrHi64]] to i32
+; CHECK-NEXT: [[newBaseAddrHi:%[0-9]*]] = and i32 [[newBaseAddrHi32]], 65535
+; CHECK-NEXT: [[newDescWord1Tmp:%[0-9]*]] = and i32 [[descWord1]], -65536
+; CHECK-NEXT: [[newDescWord1:%[0-9]*]] = or i32 [[newDescWord1Tmp]], [[newBaseAddrHi]]
+; CHECK-NEXT: [[newPayloadRingDescTmp:%[0-9]*]] = insertelement <4 x i32> [[payloadRingDesc]], i32 [[newDescWord0]], i64 0
+; CHECK-NEXT: [[newPayloadRingDesc:%[0-9]*]] = insertelement <4 x i32> [[newPayloadRingDescTmp]], i32 [[newDescWord1]], i64 1
+; CHECK: %{{[0-9]*}} = call i32 @llvm.amdgcn.raw.atomic.buffer.load.i32(<4 x i32> [[newPayloadRingDesc]], i32 %{{.*}}, i32 0, i32 5)
+; CHECK: call void @llvm.amdgcn.raw.buffer.store.i32(i32 %{{[0-9]*}}, <4 x i32> [[newPayloadRingDesc]], i32 %{{.*}}, i32 0, i32 1)
+; CHECK: br i1 %{{[0-9]*}}, label %.emitMeshTasks, label %.endEmitMeshTasks
+;
+; CHECK: .emitMeshTasks:
+; CHECK: [[meshPipeStatsBufAddr2x32:%[0-9]*]] = insertelement <2 x i32> %{{[0-9]*}}, i32 %meshPipeStatsBuf, i64 0
+; CHECK-NEXT: [[meshPipeStatsBufAddr64:%[0-9]*]] = bitcast <2 x i32> [[meshPipeStatsBufAddr2x32]] to i64
+; CHECK-NEXT: [[meshPipeStatsBufAddr:%[0-9]*]] = inttoptr i64 [[meshPipeStatsBufAddr64]] to ptr addrspace(1)
+; CHECK: [[numTaskThreadsPtr8:%[0-9]*]] = getelementptr i8, ptr addrspace(1) [[meshPipeStatsBufAddr]], i64 16
+; CHECK: %{{[0-9]*}} = atomicrmw add ptr addrspace(1) [[numTaskThreadsPtr8]], i64 %{{[0-9]*}} monotonic, align 8
+; CHECK: [[ringSize:%[0-9]*]] = extractelement <4 x i32> [[drawDataRingDesc]], i64 2
+; CHECK-NEXT: [[numEntries:%[0-9]*]] = lshr i32 [[ringSize]], 4
+; CHECK-NEXT: [[wrapMask:%[0-9]*]] = add nuw nsw i32 [[numEntries]], 268435455
+; CHECK-NEXT: [[wrappedEntryIndex:%[0-9]*]] = and i32 [[entryIndex]], [[wrapMask]]
+; CHECK-NEXT: [[entryOffset:%[0-9]*]] = shl i32 [[wrappedEntryIndex]], 4
+; CHECK-NEXT: call void @llvm.amdgcn.raw.buffer.store.v3i32(<3 x i32> <i32 3, i32 1, i32 1>, <4 x i32> [[drawDataRingDesc]], i32 0, i32 [[entryOffset]], i32 0)
+; CHECK: [[ringSize:%[0-9]*]] = extractelement <4 x i32> [[drawDataRingDesc]], i64 2
+; CHECK-NEXT: [[numEntries:%[0-9]*]] = lshr i32 [[ringSize]], 4
+; CHECK-NEXT: [[checkReadyBit:%[0-9]*]] = and i32 [[entryIndex]], [[numEntries]]
+; CHECK-NEXT: [[readyBit:%[0-9]*]] = icmp ne i32 [[checkReadyBit]], 0
+; CHECK-NEXT: [[readyBit8:%[0-9]*]] = zext i1 [[readyBit]] to i8
+; CHECK-NEXT: call void @llvm.amdgcn.raw.buffer.store.i8(i8 [[readyBit8]], <4 x i32> [[drawDataRingDesc]], i32 12, i32 [[entryOffset]], i32 0)
+; CHECK-NEXT: br label %.endEmitMeshTasks
+;
+; CHECK: .endEmitMeshTasks:
+; CHECK-NEXT: ret void
+
+; ModuleID = 'llpc_task_1'
+source_filename = "llpc_task_1"
+target datalayout = "e-p:64:64-p1:64:64-p2:32:32-p3:32:32-p4:64:64-p5:32:32-p6:32:32-p7:160:256:256:32-p8:128:128-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64-S32-A5-G1-ni:7:8"
+target triple = "amdgcn--amdpal"
+
+; Function Attrs: nounwind
+define dllexport spir_func void @main() local_unnamed_addr #0 !spirv.ExecutionModel !1 !lgc.shaderstage !2 {
+.entry:
+  %0 = call ptr addrspace(7) @lgc.task.payload.ptr()
+  %1 = call <3 x i32> (...) @lgc.create.read.builtin.input.v3i32(i32 26, i32 0, i32 poison, i32 poison)
+  %__llpc_input_proxy_gl_WorkGroupID.0.vec.extract = extractelement <3 x i32> %1, i64 0
+  %2 = add i32 %__llpc_input_proxy_gl_WorkGroupID.0.vec.extract, 1
+  %3 = getelementptr [32 x float], ptr addrspace(7) %0, i32 0, i32 %__llpc_input_proxy_gl_WorkGroupID.0.vec.extract
+  %4 = load atomic float, ptr addrspace(7) %3 unordered, align 4
+  %5 = getelementptr [32 x float], ptr addrspace(7) %0, i32 0, i32 %2
+  store atomic float %4, ptr addrspace(7) %5 unordered, align 4
+  call void (...) @lgc.emit.mesh.tasks(i32 3, i32 1, i32 1)
+  ret void
+}
+
+; Function Attrs: nounwind
+declare void @lgc.emit.mesh.tasks(...) local_unnamed_addr #0
+
+; Function Attrs: nounwind willreturn memory(read)
+declare <3 x i32> @lgc.create.read.builtin.input.v3i32(...) local_unnamed_addr #1
+
+; Function Attrs: nounwind willreturn memory(none)
+declare ptr addrspace(7) @lgc.task.payload.ptr() local_unnamed_addr #2
+
+attributes #0 = { nounwind }
+attributes #1 = { nounwind willreturn memory(read) }
+attributes #2 = { nounwind willreturn memory(none) }
+
+!llpc.compute.mode = !{!0}
+
+!0 = !{i32 32, i32 1, i32 1}
+!1 = !{i32 5364}
+!2 = !{i32 0}

@@ -1,0 +1,103 @@
+; BEGIN_SHADERTEST
+; RUN: amdllpc -enable-relocatable-shader-elf -o %t.elf %gfxip %s -v \
+; RUN:   | FileCheck -check-prefix=SHADERTEST %s
+; SHADERTEST-LABEL: PalMetadata
+; SHADERTEST: .spi_ps_in_control: {
+; SHADERTEST:  .num_interps: 0x0000000000000001
+; SHADERTEST:  .ps_w32_en: 0 }
+; SHADERTEST: .spi_ps_input_addr: {
+; SHADERTEST:  .ancillary_ena: 0
+; SHADERTEST:  .front_face_ena: 0
+; SHADERTEST:  .line_stipple_tex_ena: 0
+; SHADERTEST:  .linear_center_ena: 0
+; SHADERTEST:  .linear_centroid_ena: 0
+; SHADERTEST:  .linear_sample_ena: 0
+; SHADERTEST:  .persp_center_ena: 1
+; SHADERTEST:  .persp_centroid_ena: 0
+; SHADERTEST:  .persp_pull_model_ena: 0
+; SHADERTEST:  .persp_sample_ena: 0
+; SHADERTEST:  .pos_fixed_pt_ena: 0
+; SHADERTEST:  .pos_w_float_ena: 0
+; SHADERTEST:  .pos_x_float_ena: 0
+; SHADERTEST:  .pos_y_float_ena: 0
+; SHADERTEST:  .pos_z_float_ena: 0
+; SHADERTEST:  .sample_coverage_ena: 0 }
+; SHADERTEST: .spi_ps_input_cntl: [ {
+; SHADERTEST:  .attr0_valid: 0x0000000000000000
+; SHADERTEST:  .attr1_valid: 0x0000000000000000
+; SHADERTEST:  .flat_shade: 0
+; SHADERTEST:  .fp16_interp_mode: 0
+; SHADERTEST:  .offset: 0x0000000000000000
+; SHADERTEST:  .prim_attr: 0
+; SHADERTEST:  .pt_sprite_tex: 0 }]
+; SHADERTEST: .spi_ps_input_ena: {
+; SHADERTEST:  .ancillary_ena: 0
+; SHADERTEST:  .front_face_ena: 0
+; SHADERTEST:  .line_stipple_tex_ena: 0
+; SHADERTEST:  .linear_center_ena: 0
+; SHADERTEST:  .linear_centroid_ena: 0
+; SHADERTEST:  .linear_sample_ena: 0
+; SHADERTEST:  .persp_center_ena: 1
+; SHADERTEST:  .persp_centroid_ena: 0
+; SHADERTEST:  .persp_pull_model_ena: 0
+; SHADERTEST:  .persp_sample_ena: 0
+; SHADERTEST:  .pos_fixed_pt_ena: 0
+; SHADERTEST:  .pos_w_float_ena: 0
+; SHADERTEST:  .pos_x_float_ena: 0
+; SHADERTEST:  .pos_y_float_ena: 0
+; SHADERTEST:  .pos_z_float_ena: 0
+; SHADERTEST:  .sample_coverage_ena: 0 }
+; END_SHADERTEST
+
+[Version]
+version = 40
+
+[VsSpirv]
+               OpCapability Shader
+          %1 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Vertex %4 "main"
+       %void = OpTypeVoid
+          %3 = OpTypeFunction %void
+          %4 = OpFunction %void None %3
+          %5 = OpLabel
+               OpReturn
+               OpFunctionEnd
+
+[VsInfo]
+entryPoint = main
+
+[FsSpirv]
+               OpCapability Shader
+          %1 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Fragment %4 "main" %26 %320
+               OpExecutionMode %4 OriginUpperLeft
+               OpDecorate %26 Location 0
+               OpDecorate %320 Location 0
+       %void = OpTypeVoid
+          %3 = OpTypeFunction %void
+      %float = OpTypeFloat 32
+    %v4float = OpTypeVector %float 4
+    %v2float = OpTypeVector %float 2
+%_ptr_Input_v2float = OpTypePointer Input %v2float
+         %26 = OpVariable %_ptr_Input_v2float Input
+%_ptr_Output_v4float = OpTypePointer Output %v4float
+        %320 = OpVariable %_ptr_Output_v4float Output
+        %348 = OpUndef %v2float
+          %4 = OpFunction %void None %3
+          %5 = OpLabel
+        %154 = OpLoad %v2float %26
+        %155 = OpVectorShuffle %v4float %154 %348 0 1 0 1
+               OpStore %320 %155
+               OpReturn
+               OpFunctionEnd
+
+[FsInfo]
+entryPoint = main
+
+[GraphicsPipelineState]
+colorBuffer[0].format = VK_FORMAT_R16G16B16A16_SFLOAT
+colorBuffer[0].channelWriteMask = 15
+colorBuffer[0].blendEnable = 0
+colorBuffer[0].blendSrcAlphaToColor = 0

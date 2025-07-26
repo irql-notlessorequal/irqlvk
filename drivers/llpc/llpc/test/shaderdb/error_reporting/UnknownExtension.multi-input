@@ -1,0 +1,12 @@
+; Check that an error is produced when a file with unknown extensions is passed.
+
+; BEGIN_SHADERTEST
+; RUN: not amdllpc -validate-spirv=true -v %gfxip %s \
+; RUN:   | FileCheck --check-prefix=SHADERTEST %s
+;
+; SHADERTEST-LABEL: {{^}}ERROR: Result::ErrorInvalidShader: File {{.*}}.multi-input has an unknown extension;
+; SHADERTEST-SAME:  try -help to list supported input formats
+; SHADERTEST-LABEL: {{^}}===== AMDLLPC FAILED =====
+; END_SHADERTEST
+
+Nothing more to see here.

@@ -1,0 +1,34 @@
+; Check that two GLSL input shaders can be compiled into a single pipeline.
+
+; BEGIN_SHADERTEST
+; RUN: amdllpc -v \
+; RUN:      -enable-part-pipeline=0 \
+; RUN:      %S/test_inputs/Vs1.vert \
+; RUN:      %S/test_inputs/Fs1.frag \
+; RUN: | FileCheck -check-prefix=SHADERTEST_PP0 %s
+;
+; SHADERTEST_PP0-LABEL: {{^//}} LLPC final pipeline module info
+; SHADERTEST_PP0:       define dllexport amdgpu_vs void @_amdgpu_vs_main
+; SHADERTEST_PP0:       define dllexport amdgpu_ps void @_amdgpu_ps_main
+; SHADERTEST_PP0-LABEL: {{^//}} LLPC final ELF info
+; SHADERTEST_PP0-LABEL: _amdgpu_vs_main:
+; SHADERTEST_PP0-LABEL: _amdgpu_ps_main:
+; SHADERTEST_PP0-LABEL: {{^=====}} AMDLLPC SUCCESS ====
+; END_SHADERTEST
+
+; BEGIN_SHADERTEST
+; RUN: amdllpc -v \
+; RUN:      -enable-part-pipeline=1 \
+; RUN:      %S/test_inputs/Vs1.vert \
+; RUN:      %S/test_inputs/Fs1.frag \
+; RUN: | FileCheck -check-prefix=SHADERTEST_PP1 %s
+;
+; SHADERTEST_PP1-LABEL: {{^//}} LLPC final pipeline module info
+; SHADERTEST_PP1:       define dllexport amdgpu_ps void @_amdgpu_ps_main
+; SHADERTEST_PP1-LABEL: {{^//}} LLPC final pipeline module info
+; SHADERTEST_PP1:       define dllexport amdgpu_vs void @_amdgpu_vs_main
+; SHADERTEST_PP1-LABEL: {{^//}} LLPC final ELF info
+; SHADERTEST_PP1-LABEL: _amdgpu_vs_main:
+; SHADERTEST_PP1-LABEL: _amdgpu_ps_main:
+; SHADERTEST_PP1-LABEL: {{^=====}} AMDLLPC SUCCESS ====
+; END_SHADERTEST

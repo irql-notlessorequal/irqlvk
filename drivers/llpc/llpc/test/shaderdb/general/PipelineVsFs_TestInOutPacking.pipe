@@ -1,0 +1,264 @@
+; BEGIN_SHADERTEST
+; RUN: amdllpc -enable-part-pipeline=0 -v %gfxip %s | FileCheck -check-prefix=SHADERTEST_PP0 %s
+; SHADERTEST_PP0-LABEL: LLPC pipeline before-patching results
+; SHADERTEST_PP0-LABEL: LLPC location input/output mapping results (FS shader)
+; SHADERTEST_PP0: (FS) Input:  loc = 7, comp = 0 =>  Mapped = 0, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 7, comp = 1 =>  Mapped = 0, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 8, comp = 0 =>  Mapped = 0, 2
+; SHADERTEST_PP0: (FS) Input:  loc = 8, comp = 1 =>  Mapped = 0, 3
+; SHADERTEST_PP0: (FS) Input:  loc = 9, comp = 0 =>  Mapped = 1, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 9, comp = 1 =>  Mapped = 1, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 9, comp = 2 =>  Mapped = 1, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 9, comp = 3 =>  Mapped = 1, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 10, comp = 0 =>  Mapped = 1, 2
+; SHADERTEST_PP0: (FS) Input:  loc = 10, comp = 1 =>  Mapped = 1, 2
+; SHADERTEST_PP0: (FS) Input:  loc = 10, comp = 2 =>  Mapped = 1, 3
+; SHADERTEST_PP0: (FS) Input:  loc = 10, comp = 3 =>  Mapped = 1, 3
+; SHADERTEST_PP0: (FS) Input:  loc = 11, comp = 0 =>  Mapped = 2, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 11, comp = 1 =>  Mapped = 2, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 11, comp = 2 =>  Mapped = 2, 2
+; SHADERTEST_PP0: (FS) Input:  loc = 11, comp = 3 =>  Mapped = 2, 3
+; SHADERTEST_PP0: (FS) Input:  loc = 12, comp = 0 =>  Mapped = 3, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 12, comp = 1 =>  Mapped = 3, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 13, comp = 0 =>  Mapped = 3, 2
+; SHADERTEST_PP0: (FS) Input:  loc = 14, comp = 0 =>  Mapped = 4, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 14, comp = 1 =>  Mapped = 4, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 15, comp = 0 =>  Mapped = 4, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 15, comp = 1 =>  Mapped = 4, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 16, comp = 0 =>  Mapped = 4, 2
+; SHADERTEST_PP0: (FS) Input:  loc = 16, comp = 1 =>  Mapped = 4, 2
+; SHADERTEST_PP0: (FS) Input:  loc = 16, comp = 2 =>  Mapped = 4, 3
+; SHADERTEST_PP0: (FS) Input:  loc = 16, comp = 3 =>  Mapped = 4, 3
+; SHADERTEST_PP0: (FS) Input:  loc = 17, comp = 0 =>  Mapped = 5, 0
+; SHADERTEST_PP0: (FS) Input:  loc = 17, comp = 1 =>  Mapped = 5, 1
+; SHADERTEST_PP0: (FS) Input:  loc = 17, comp = 2 =>  Mapped = 5, 2
+; SHADERTEST_PP0-LABEL: LLPC location input/output mapping results (VS shader)
+; SHADERTEST_PP0: (VS) Output: loc = 0, comp = 0  =>  Mapped = 6, 0
+; SHADERTEST_PP0: (VS) Output: loc = 0, comp = 1  =>  Mapped = 6, 1
+; SHADERTEST_PP0: (VS) Output: loc = 0, comp = 2  =>  Mapped = 6, 2
+; SHADERTEST_PP0: (VS) Output: loc = 0, comp = 3  =>  Mapped = 6, 3
+; SHADERTEST_PP0: (VS) Output: loc = 1, comp = 0  =>  Mapped = 7, 0
+; SHADERTEST_PP0: (VS) Output: loc = 1, comp = 1  =>  Mapped = 7, 1
+; SHADERTEST_PP0: (VS) Output: loc = 1, comp = 2  =>  Mapped = 7, 2
+; SHADERTEST_PP0: (VS) Output: loc = 2, comp = 0  =>  Mapped = 7, 3
+; SHADERTEST_PP0: (VS) Output: loc = 2, comp = 1  =>  Mapped = 8, 0
+; SHADERTEST_PP0: (VS) Output: loc = 2, comp = 2  =>  Mapped = 8, 1
+; SHADERTEST_PP0: (VS) Output: loc = 3, comp = 0  =>  Mapped = 8, 2
+; SHADERTEST_PP0: (VS) Output: loc = 3, comp = 1  =>  Mapped = 8, 3
+; SHADERTEST_PP0: (VS) Output: loc = 6, comp = 0  =>  Mapped = 9, 0
+; SHADERTEST_PP0: (VS) Output: loc = 7, comp = 0  =>  Mapped = 0, 0
+; SHADERTEST_PP0: (VS) Output: loc = 7, comp = 1  =>  Mapped = 0, 1
+; SHADERTEST_PP0: (VS) Output: loc = 8, comp = 0  =>  Mapped = 0, 2
+; SHADERTEST_PP0: (VS) Output: loc = 8, comp = 1  =>  Mapped = 0, 3
+; SHADERTEST_PP0: (VS) Output: loc = 9, comp = 0  =>  Mapped = 1, 0
+; SHADERTEST_PP0: (VS) Output: loc = 9, comp = 1  =>  Mapped = 1, 0
+; SHADERTEST_PP0: (VS) Output: loc = 9, comp = 2  =>  Mapped = 1, 1
+; SHADERTEST_PP0: (VS) Output: loc = 9, comp = 3  =>  Mapped = 1, 1
+; SHADERTEST_PP0: (VS) Output: loc = 10, comp = 0  =>  Mapped = 1, 2
+; SHADERTEST_PP0: (VS) Output: loc = 10, comp = 1  =>  Mapped = 1, 2
+; SHADERTEST_PP0: (VS) Output: loc = 10, comp = 2  =>  Mapped = 1, 3
+; SHADERTEST_PP0: (VS) Output: loc = 10, comp = 3  =>  Mapped = 1, 3
+; SHADERTEST_PP0: (VS) Output: loc = 11, comp = 0  =>  Mapped = 2, 0
+; SHADERTEST_PP0: (VS) Output: loc = 11, comp = 1  =>  Mapped = 2, 1
+; SHADERTEST_PP0: (VS) Output: loc = 11, comp = 2  =>  Mapped = 2, 2
+; SHADERTEST_PP0: (VS) Output: loc = 11, comp = 3  =>  Mapped = 2, 3
+; SHADERTEST_PP0: (VS) Output: loc = 12, comp = 0  =>  Mapped = 3, 0
+; SHADERTEST_PP0: (VS) Output: loc = 12, comp = 1  =>  Mapped = 3, 1
+; SHADERTEST_PP0: (VS) Output: loc = 13, comp = 0  =>  Mapped = 3, 2
+; SHADERTEST_PP0: (VS) Output: loc = 14, comp = 0  =>  Mapped = 4, 0
+; SHADERTEST_PP0: (VS) Output: loc = 14, comp = 1  =>  Mapped = 4, 0
+; SHADERTEST_PP0: (VS) Output: loc = 15, comp = 0  =>  Mapped = 4, 1
+; SHADERTEST_PP0: (VS) Output: loc = 15, comp = 1  =>  Mapped = 4, 1
+; SHADERTEST_PP0: (VS) Output: loc = 16, comp = 0  =>  Mapped = 4, 2
+; SHADERTEST_PP0: (VS) Output: loc = 16, comp = 1  =>  Mapped = 4, 2
+; SHADERTEST_PP0: (VS) Output: loc = 16, comp = 2  =>  Mapped = 4, 3
+; SHADERTEST_PP0: (VS) Output: loc = 16, comp = 3  =>  Mapped = 4, 3
+; SHADERTEST_PP0: (VS) Output: loc = 17, comp = 0  =>  Mapped = 5, 0
+; SHADERTEST_PP0: (VS) Output: loc = 17, comp = 1  =>  Mapped = 5, 1
+; SHADERTEST_PP0: (VS) Output: loc = 17, comp = 2  =>  Mapped = 5, 2
+; SHADERTEST_PP0: AMDLLPC SUCCESS
+; END_SHADERTEST
+
+
+
+
+; BEGIN_SHADERTEST
+; RUN: amdllpc -enable-part-pipeline=1 -v %gfxip %s | FileCheck -check-prefix=SHADERTEST_PP1 %s
+; Fragment shader part-pipeline:
+; SHADERTEST_PP1-LABEL: LLPC pipeline before-patching results
+; SHADERTEST_PP1-LABEL: LLPC location input/output mapping results (FS shader)
+; SHADERTEST_PP1: (FS) Input:  loc = 7, comp = 0 =>  Mapped = 0, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 7, comp = 1 =>  Mapped = 0, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 8, comp = 0 =>  Mapped = 0, 2
+; SHADERTEST_PP1: (FS) Input:  loc = 8, comp = 1 =>  Mapped = 0, 3
+; SHADERTEST_PP1: (FS) Input:  loc = 9, comp = 0 =>  Mapped = 1, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 9, comp = 1 =>  Mapped = 1, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 9, comp = 2 =>  Mapped = 1, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 9, comp = 3 =>  Mapped = 1, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 10, comp = 0 =>  Mapped = 1, 2
+; SHADERTEST_PP1: (FS) Input:  loc = 10, comp = 1 =>  Mapped = 1, 2
+; SHADERTEST_PP1: (FS) Input:  loc = 10, comp = 2 =>  Mapped = 1, 3
+; SHADERTEST_PP1: (FS) Input:  loc = 10, comp = 3 =>  Mapped = 1, 3
+; SHADERTEST_PP1: (FS) Input:  loc = 11, comp = 0 =>  Mapped = 2, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 11, comp = 1 =>  Mapped = 2, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 11, comp = 2 =>  Mapped = 2, 2
+; SHADERTEST_PP1: (FS) Input:  loc = 11, comp = 3 =>  Mapped = 2, 3
+; SHADERTEST_PP1: (FS) Input:  loc = 12, comp = 0 =>  Mapped = 3, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 12, comp = 1 =>  Mapped = 3, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 13, comp = 0 =>  Mapped = 3, 2
+; SHADERTEST_PP1: (FS) Input:  loc = 14, comp = 0 =>  Mapped = 4, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 14, comp = 1 =>  Mapped = 4, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 15, comp = 0 =>  Mapped = 4, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 15, comp = 1 =>  Mapped = 4, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 16, comp = 0 =>  Mapped = 4, 2
+; SHADERTEST_PP1: (FS) Input:  loc = 16, comp = 1 =>  Mapped = 4, 2
+; SHADERTEST_PP1: (FS) Input:  loc = 16, comp = 2 =>  Mapped = 4, 3
+; SHADERTEST_PP1: (FS) Input:  loc = 16, comp = 3 =>  Mapped = 4, 3
+; SHADERTEST_PP1: (FS) Input:  loc = 17, comp = 0 =>  Mapped = 5, 0
+; SHADERTEST_PP1: (FS) Input:  loc = 17, comp = 1 =>  Mapped = 5, 1
+; SHADERTEST_PP1: (FS) Input:  loc = 17, comp = 2 =>  Mapped = 5, 2
+; Pre-rasterization part-pipeline:
+; SHADERTEST_PP1-LABEL: LLPC pipeline before-patching results
+; SHADERTEST_PP1-LABEL: LLPC location input/output mapping results (VS shader)
+; SHADERTEST_PP1: (VS) Output: loc = 0, comp = 0  =>  Mapped = 6, 0
+; SHADERTEST_PP1: (VS) Output: loc = 0, comp = 1  =>  Mapped = 6, 1
+; SHADERTEST_PP1: (VS) Output: loc = 0, comp = 2  =>  Mapped = 6, 2
+; SHADERTEST_PP1: (VS) Output: loc = 0, comp = 3  =>  Mapped = 6, 3
+; SHADERTEST_PP1: (VS) Output: loc = 1, comp = 0  =>  Mapped = 7, 0
+; SHADERTEST_PP1: (VS) Output: loc = 1, comp = 1  =>  Mapped = 7, 1
+; SHADERTEST_PP1: (VS) Output: loc = 1, comp = 2  =>  Mapped = 7, 2
+; SHADERTEST_PP1: (VS) Output: loc = 2, comp = 0  =>  Mapped = 7, 3
+; SHADERTEST_PP1: (VS) Output: loc = 2, comp = 1  =>  Mapped = 8, 0
+; SHADERTEST_PP1: (VS) Output: loc = 2, comp = 2  =>  Mapped = 8, 1
+; SHADERTEST_PP1: (VS) Output: loc = 3, comp = 0  =>  Mapped = 8, 2
+; SHADERTEST_PP1: (VS) Output: loc = 3, comp = 1  =>  Mapped = 8, 3
+; SHADERTEST_PP1: (VS) Output: loc = 6, comp = 0  =>  Mapped = 9, 0
+; SHADERTEST_PP1: (VS) Output: loc = 7, comp = 0  =>  Mapped = 0, 0
+; SHADERTEST_PP1: (VS) Output: loc = 7, comp = 1  =>  Mapped = 0, 1
+; SHADERTEST_PP1: (VS) Output: loc = 8, comp = 0  =>  Mapped = 0, 2
+; SHADERTEST_PP1: (VS) Output: loc = 8, comp = 1  =>  Mapped = 0, 3
+; SHADERTEST_PP1: (VS) Output: loc = 9, comp = 0  =>  Mapped = 1, 0
+; SHADERTEST_PP1: (VS) Output: loc = 9, comp = 1  =>  Mapped = 1, 0
+; SHADERTEST_PP1: (VS) Output: loc = 9, comp = 2  =>  Mapped = 1, 1
+; SHADERTEST_PP1: (VS) Output: loc = 9, comp = 3  =>  Mapped = 1, 1
+; SHADERTEST_PP1: (VS) Output: loc = 10, comp = 0  =>  Mapped = 1, 2
+; SHADERTEST_PP1: (VS) Output: loc = 10, comp = 1  =>  Mapped = 1, 2
+; SHADERTEST_PP1: (VS) Output: loc = 10, comp = 2  =>  Mapped = 1, 3
+; SHADERTEST_PP1: (VS) Output: loc = 10, comp = 3  =>  Mapped = 1, 3
+; SHADERTEST_PP1: (VS) Output: loc = 11, comp = 0  =>  Mapped = 2, 0
+; SHADERTEST_PP1: (VS) Output: loc = 11, comp = 1  =>  Mapped = 2, 1
+; SHADERTEST_PP1: (VS) Output: loc = 11, comp = 2  =>  Mapped = 2, 2
+; SHADERTEST_PP1: (VS) Output: loc = 11, comp = 3  =>  Mapped = 2, 3
+; SHADERTEST_PP1: (VS) Output: loc = 12, comp = 0  =>  Mapped = 3, 0
+; SHADERTEST_PP1: (VS) Output: loc = 12, comp = 1  =>  Mapped = 3, 1
+; SHADERTEST_PP1: (VS) Output: loc = 13, comp = 0  =>  Mapped = 3, 2
+; SHADERTEST_PP1: (VS) Output: loc = 14, comp = 0  =>  Mapped = 4, 0
+; SHADERTEST_PP1: (VS) Output: loc = 14, comp = 1  =>  Mapped = 4, 0
+; SHADERTEST_PP1: (VS) Output: loc = 15, comp = 0  =>  Mapped = 4, 1
+; SHADERTEST_PP1: (VS) Output: loc = 15, comp = 1  =>  Mapped = 4, 1
+; SHADERTEST_PP1: (VS) Output: loc = 16, comp = 0  =>  Mapped = 4, 2
+; SHADERTEST_PP1: (VS) Output: loc = 16, comp = 1  =>  Mapped = 4, 2
+; SHADERTEST_PP1: (VS) Output: loc = 16, comp = 2  =>  Mapped = 4, 3
+; SHADERTEST_PP1: (VS) Output: loc = 16, comp = 3  =>  Mapped = 4, 3
+; SHADERTEST_PP1: (VS) Output: loc = 17, comp = 0  =>  Mapped = 5, 0
+; SHADERTEST_PP1: (VS) Output: loc = 17, comp = 1  =>  Mapped = 5, 1
+; SHADERTEST_PP1: (VS) Output: loc = 17, comp = 2  =>  Mapped = 5, 2
+; SHADERTEST_PP1: AMDLLPC SUCCESS
+; END_SHADERTEST
+
+[Version]
+version = 6
+
+[VsGlsl]
+#version 450
+#extension GL_AMD_gpu_shader_half_float: enable
+#extension GL_ARB_gpu_shader_int64 : enable
+#extension GL_AMD_gpu_shader_int16 : enable
+#extension GL_EXT_shader_explicit_arithmetic_types_int8: enable
+layout(location = 0, xfb_buffer = 0, xfb_stride = 60, xfb_offset = 0) out vec4 xfbOut1;
+layout(location = 1, xfb_buffer = 0, xfb_stride = 60, xfb_offset = 36) out vec3 xfbOut2[2];
+layout(location = 3, xfb_buffer = 0, xfb_stride = 60, xfb_offset = 24) out uvec2 xfbOut3;
+layout(location = 4) out float unused[2];
+layout(location = 6, xfb_buffer = 0, xfb_stride = 60, xfb_offset = 32) out uint xfbOut4;
+
+layout(location = 7) out vec2 v2f_0;
+layout(location = 8) out vec2 v2f_1;
+layout(location = 9) out f16vec4 v4f16_0;
+layout(location = 10) out f16vec4 v4f16_1;
+layout(location = 11) out i64vec3 v3i64_0;
+layout(location = 13) out int i32_0;
+layout(location = 14) out i8vec2 v2i8_0;
+layout(location = 15) out i16vec2 v2i16_0;
+layout(location = 16) out f16vec4 v4f16_2;
+layout(location = 17) out vec3 interp;
+
+
+void main()
+{
+    xfbOut1 = vec4(1.0);
+    xfbOut2[0] = vec3(2.0);
+    xfbOut2[1] = vec3(3.0);
+    xfbOut3 = uvec2(4);
+    unused[0] = 5.0;
+    unused[1] = 6.0;
+    xfbOut4 = 7;
+    v2f_0 = vec2(1.0, 0.0);
+    v2f_1 = vec2(0.0, 1.0);
+    v4f16_0 = f16vec4(0.2, 0.2, 0.2, 1.0);
+    v4f16_1 = v4f16_0;
+    v3i64_0 = i64vec3(1, 1, 1);
+    i32_0 = 1;
+    v2i8_0 = i8vec2(0, 0);
+    v2i16_0 = i16vec2(1, 1);
+    v4f16_2 = f16vec4(0.1, 0.1, 0.1, 1.0);
+    interp = vec3(0.5, 0.5, 0.5);
+}
+
+[VsInfo]
+entryPoint = main
+
+[FsGlsl]
+#version 450
+#extension GL_AMD_gpu_shader_half_float: enable
+#extension GL_ARB_gpu_shader_int64 : enable
+#extension GL_AMD_gpu_shader_int16 : enable
+#extension GL_EXT_shader_explicit_arithmetic_types_int8: enable
+#extension GL_AMD_shader_explicit_vertex_parameter : enable
+layout(location = 7) in vec2 v2f_0;
+layout(location = 8) in vec2 v2f_1;
+layout(location = 9) in f16vec4 v4f16_0;
+layout(location = 10) in f16vec4 v4f16_1;
+layout(location = 11) flat in i64vec3 v3i64_0;
+layout(location = 13) flat in int i32_0;
+layout(location = 14) flat in i8vec2 v2i8_0;
+layout(location = 15) flat in i16vec2 v2i16_0;
+layout(location = 16) flat in f16vec4 v4f16_2;
+layout(location = 17) __explicitInterpAMD in vec3 interp;
+layout(location = 0) out vec4 fragColor;
+
+void main()
+{
+    vec4 v0 = vec4(v2f_0, v2f_1) + vec4(float(v3i64_0.x), float(v3i64_0.y), float(v3i64_0.z), float(i32_0));
+    f16vec4 tmpV = v4f16_0 + v4f16_1;
+    vec4 v1 = vec4(float(tmpV.x), float(tmpV.y), float(tmpV.z), float(tmpV.w));
+    vec4 v2 = vec4(float(v2i8_0.x), float(v2i8_0.y), float(v2i16_0.x), float(v2i16_0.y)) + v4f16_2;
+    vec4 v = (v0 + v1 + v2) / 3.0;
+
+    vec3 result_0 = interpolateAtVertexAMD(interp, 1u);
+    vec3 result_1 = interpolateAtVertexAMD(interp, 2u);
+    vec3 result_2 = interpolateAtVertexAMD(interp, 0u);
+
+    vec3 expect_result = v.x * result_0 + v.y * result_1 + v.z * result_2;
+    fragColor =  all(lessThan(expect_result, vec3(v.w)))? vec4(1.0, 0.0, 0.0, 1.0) : vec4(0.0, 1.0, 0.0, 1.0);
+}
+
+[FsInfo]
+entryPoint = main
+
+[GraphicsPipelineState]
+patchControlPoints = 0
+alphaToCoverageEnable = 0
+dualSourceBlendEnable = 0
+colorBuffer[0].format = VK_FORMAT_B8G8R8A8_UNORM
+colorBuffer[0].blendEnable = 0
+colorBuffer[0].blendSrcAlphaToColor = 0

@@ -1,0 +1,218 @@
+; BEGIN_SHADERTEST
+; RUN: amdllpc -v %gfxip %s | FileCheck -check-prefix=SHADERTEST %s
+; SHADERTEST-LABEL: {{^// LLPC}} transform feedback export info (geometry shader)
+; SHADERTEST: <2 x i32> (loc = 0, comp = 0), xfbBuffer = 1, xfbStride = 40, xfbOffset = 0, streamID = 0
+; SHADERTEST: <3 x double> (loc = 1, comp = 0), xfbBuffer = 1, xfbStride = 40, xfbOffset = 16, streamID = 0
+; SHADERTEST: <2 x float> (loc = 4, comp = 0), xfbBuffer = 2, xfbStride = 8, xfbOffset = 0, streamID = 0
+; SHADERTEST: <2 x double> (loc = 3, comp = 0), xfbBuffer = 0, xfbStride = 16, xfbOffset = 0, streamID = 1
+; SHADERTEST: float (loc = 4, comp = 3), xfbBuffer = 3, xfbStride = 4, xfbOffset = 0, streamID = 1
+; SHADERTEST-LABEL: {{^// LLPC}} location input/output mapping results (GS shader)
+; SHADERTEST: (GS) Output: stream = 0,  loc = 0, comp = 0  =>  Mapped = 0, 0
+; SHADERTEST: (GS) Output: stream = 0,  loc = 0, comp = 1  =>  Mapped = 0, 1
+; SHADERTEST: (GS) Output: stream = 0,  loc = 1, comp = 0  =>  Mapped = 0, 2
+; SHADERTEST: (GS) Output: stream = 0,  loc = 1, comp = 1  =>  Mapped = 0, 3
+; SHADERTEST: (GS) Output: stream = 0,  loc = 1, comp = 2  =>  Mapped = 1, 0
+; SHADERTEST: (GS) Output: stream = 0,  loc = 1, comp = 3  =>  Mapped = 1, 1
+; SHADERTEST: (GS) Output: stream = 0,  loc = 2, comp = 0  =>  Mapped = 1, 2
+; SHADERTEST: (GS) Output: stream = 0,  loc = 2, comp = 1  =>  Mapped = 1, 3
+; SHADERTEST: (GS) Output: stream = 0,  loc = 4, comp = 0  =>  Mapped = 2, 0
+; SHADERTEST: (GS) Output: stream = 0,  loc = 4, comp = 1  =>  Mapped = 2, 1
+; SHADERTEST: (GS) Output: stream = 1,  loc = 3, comp = 0  =>  Mapped = 2, 0
+; SHADERTEST: (GS) Output: stream = 1,  loc = 3, comp = 1  =>  Mapped = 2, 1
+; SHADERTEST: (GS) Output: stream = 1,  loc = 3, comp = 2  =>  Mapped = 2, 2
+; SHADERTEST: (GS) Output: stream = 1,  loc = 3, comp = 3  =>  Mapped = 2, 3
+; SHADERTEST: (GS) Output: stream = 1,  loc = 4, comp = 3  =>  Mapped = 3, 0
+; SHADERTEST-LABEL: {{^// LLPC}} pipeline patching results
+; SHADERTEST: call void @llvm.amdgcn.exp.f32(i32 32, i32 15
+; SHADERTEST: call void @llvm.amdgcn.exp.f32(i32 33, i32 15
+; SHADERTEST: AMDLLPC SUCCESS
+; END_SHADERTEST
+
+[Version]
+version = 40
+
+[VsGlsl]
+#version 450 core
+
+layout(location = 0) in vec4 inV0;
+layout(location = 1) in vec2 inV1;
+layout(location = 2) in vec2 inV2;
+
+layout(location = 0) out vec2 out1;
+layout(location = 1) out vec2 out2;
+
+void main(void)
+{
+    gl_Position = inV0;
+    out1 = inV1;
+    out2 = inV2;
+}
+
+[VsInfo]
+entryPoint = main
+
+
+[TcsGlsl]
+#version 450 core
+layout(vertices=3) out;
+layout(location = 0) in vec2 inArray1[];
+layout(location = 1) in vec2 inArray2[];
+
+layout(location = 0) out vec4 outArray[];
+
+void main(void)
+{
+    gl_TessLevelOuter[0] = 2.0;
+    gl_TessLevelOuter[1] = 2.0;
+    gl_TessLevelOuter[2] = 2.0;
+    gl_TessLevelInner[0] = 4.0;
+
+    gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
+    outArray[gl_InvocationID] = vec4(inArray2[gl_InvocationID].xy, inArray1[gl_InvocationID].xy);
+}
+[TcsInfo]
+entryPoint = main
+
+[TesGlsl]
+#version 450 core
+
+layout(triangles,fractional_even_spacing,ccw) in;
+
+layout(location = 0) in vec4 inArray[];
+
+layout(location = 0) out vec2 color1;
+layout(location = 1) out vec2 color2;
+
+void main(void)
+{
+    float u = gl_TessCoord[0];
+    float v = gl_TessCoord[1];
+    float w = gl_TessCoord[2];
+
+    gl_Position = inArray[0] * u + inArray[1] * v + inArray[2] * w;
+    vec4 color = (inArray[0] + inArray[1] + inArray[2]) / 3.0;
+    color1 = color.xy;
+    color2 = color.zw;
+}
+
+[TesInfo]
+entryPoint = main
+
+[GsGlsl]
+#version 450 core
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+layout(location = 0) in vec2 in1[];
+layout(location = 1) in vec2 in2[];
+
+layout(stream = 0) out;
+layout(location = 0, xfb_buffer=1, xfb_offset=0) out ivec2 out1;
+layout(location = 1, xfb_buffer=1, xfb_offset=16) out dvec3 out2;
+layout(location = 4, component = 0, xfb_buffer = 2, xfb_offset = 0) out vec2 out4;
+
+layout(stream=1) out;
+layout(location = 3,xfb_buffer=0, xfb_offset=0) out dvec2 out3;
+layout(location = 4, component = 3, xfb_buffer = 3, xfb_offset = 0) out float out5;
+
+void main()
+{
+    for (uint i = 0; i < gl_in.length(); ++i)
+    {
+        gl_Position = gl_in[i].gl_Position;
+        out1 = ivec2(in1[i]);
+        out2 = dvec3(in1[i].xy, in2[i].x);
+        out4 = in1[i];
+        EmitStreamVertex(0);
+        EndStreamPrimitive(0);
+        out3 = dvec2(in2[i]);
+        out5 = in2[i].x;
+        EmitStreamVertex(1);
+        EndStreamPrimitive(1);
+    }
+}
+
+
+[GsInfo]
+entryPoint = main
+
+
+[FsGlsl]
+#version 450 core
+
+layout(location = 0) in flat ivec2 in1;
+layout(location = 1) in flat dvec3 in2;
+
+layout(location = 0) out vec4 fragColor;
+
+void main(void)
+{
+    vec2 v = vec2(in1.xy) + vec2(in2.xy);
+    fragColor =  vec4(v.xy, float(in2.z), 1.0);
+}
+
+[FsInfo]
+entryPoint = main
+
+[GraphicsPipelineState]
+topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST
+patchControlPoints = 3
+deviceIndex = 0
+disableVertexReuse = 0
+switchWinding = 0
+enableMultiView = 0
+depthClipEnable = 1
+rasterizerDiscardEnable = 0
+perSampleShading = 0
+numSamples = 1
+samplePatternIdx = 0
+usrClipPlaneMask = 0
+polygonMode = VK_POLYGON_MODE_FILL
+cullMode = VK_CULL_MODE_NONE
+frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE
+depthBiasEnable = 0
+alphaToCoverageEnable = 0
+dualSourceBlendEnable = 0
+colorBuffer[0].format = VK_FORMAT_R8G8B8A8_UNORM
+colorBuffer[0].channelWriteMask = 15
+colorBuffer[0].blendEnable = 0
+colorBuffer[0].blendSrcAlphaToColor = 1
+nggState.enableNgg = 0
+nggState.enableGsUse = 0
+nggState.forceNonPassthrough = 0
+nggState.alwaysUsePrimShaderTable = 0
+nggState.compactMode = NggCompactDisable
+nggState.enableFastLaunch = 0
+nggState.enableVertexReuse = 0
+nggState.enableBackfaceCulling = 0
+nggState.enableFrustumCulling = 0
+nggState.enableBoxFilterCulling = 0
+nggState.enableSphereCulling = 0
+nggState.enableSmallPrimFilter = 0
+nggState.enableCullDistanceCulling = 0
+nggState.backfaceExponent = 0
+nggState.subgroupSizing = Auto
+nggState.primsPerSubgroup = 0
+nggState.vertsPerSubgroup = 0
+options.includeDisassembly = 0
+options.scalarBlockLayout = 1
+options.includeIr = 0
+options.robustBufferAccess = 0
+options.reconfigWorkgroupLayout = 0
+
+
+[VertexInputState]
+binding[0].binding = 0
+binding[0].stride = 16
+binding[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX
+attribute[0].location = 0
+attribute[0].binding = 0
+attribute[0].format = VK_FORMAT_R32G32B32A32_SFLOAT
+attribute[0].offset = 0
+attribute[1].location = 1
+attribute[1].binding = 0
+attribute[1].format = VK_FORMAT_R32G32_SFLOAT
+attribute[1].offset = 0
+attribute[2].location = 2
+attribute[2].binding = 0
+attribute[2].format = VK_FORMAT_R32G32_SFLOAT
+attribute[2].offset = 0

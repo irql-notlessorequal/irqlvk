@@ -1,0 +1,26 @@
+#version 450
+layout(set = 0, binding = 0) buffer BO
+{
+    vec4 m;
+};
+
+layout(local_size_x = 1) in;
+void main()
+{
+    m.y = m.x;
+}
+
+// BEGIN_SHADERTEST
+/*
+; RUN: amdllpc -v %gfxip %s | FileCheck -check-prefix=SHADERTEST %s
+; REQUIRES: do-not-run-me
+
+; SHADERTEST-LABEL: {{^// LLPC}} SPIR-V lowering results
+; SHADERTEST: %{{[0-9]*}} = call ptr addrspace(7) {{.*}} @lgc.create.load.buffer.desc.{{[0-9a-z.]*}}(i64 0, i32 0, i32 0,
+; SHADERTEST: %{{[0-9]*}} = load float, ptr addrspace(7) %{{[0-9]*}}, align 4
+; SHADERTEST: %{{[0-9]*}} = getelementptr inbounds <{ [4 x float] }>, ptr addrspace(7) %{{[0-9]*}}, i64 0, i32 0, i64 1
+; SHADERTEST: store float %{{[0-9]*}}, ptr addrspace(7) %{{[0-9]*}}, align 4
+
+; SHADERTEST: AMDLLPC SUCCESS
+*/
+// END_SHADERTEST

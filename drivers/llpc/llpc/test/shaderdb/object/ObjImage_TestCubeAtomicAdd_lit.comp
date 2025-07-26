@@ -1,0 +1,32 @@
+#version 440
+precision highp uimageCubeArray;
+
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout (r32ui, binding=0) coherent uniform uimageCubeArray u_resultImage;
+
+void main (void)
+{
+	int gx = int(gl_GlobalInvocationID.x);
+	int gy = int(gl_GlobalInvocationID.y);
+	int gz = int(gl_GlobalInvocationID.z);
+	imageAtomicAdd(u_resultImage, ivec3(gx % 64,gy,gz), uint(gx*gx + gy*gy + gz*gz));
+}
+
+// BEGIN_SHADERTEST
+/*
+; RUN: amdllpc -v %gfxip %s | FileCheck -check-prefix=SHADERTEST %s
+; SHADERTEST-LABEL: {{^// LLPC}} SPIRV-to-LLVM translation results
+; SHADERTEST: call i32 (...) @lgc.create.image.atomic.i32(i32 2, i32 8, i32 0, i32 0, <8 x i32>
+
+; SHADERTEST-LABEL: {{^// LLPC.*}} SPIR-V lowering results
+; SHADERTEST: call i32 (...) @lgc.create.image.atomic.i32(i32 2, i32 8, i32 0, i32 0, <8 x i32>
+
+; SHADERTEST-LABEL: {{^// LLPC}} final pipeline module info
+; SHADERTEST: call i32 @llvm.amdgcn.image.atomic.add.cube.i32.i32
+
+; SHADERTEST-LABEL: {{^// LLPC}} final ELF info
+; SHADERTEST: image_atomic_add v{{[0-9]*}}
+
+; SHADERTEST: AMDLLPC SUCCESS
+*/
+// END_SHADERTEST
